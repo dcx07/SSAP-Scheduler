@@ -73,4 +73,4 @@ for item in data["data"]:
 with open("schedule_grouped.json", "w", encoding="utf-8") as f:
     json.dump(grouped, f, ensure_ascii=False, indent=2)
 
-print("✅ 课表已成功保存为 schedule_grouped.json")
+print("课表已成功保存为 schedule_grouped.json")

@@ -1,0 +1,39 @@
+[
+  {
+    "domain": ".sendeltastudent.schoolis.cn",
+    "httpOnly": false,
+    "name": "Hm_lpvt_4f71d5631552c192190713bef03fe1d8",
+    "path": "/",
+    "sameSite": "Lax",
+    "secure": false,
+    "value": "1747745457"
+  },
+  {
+    "domain": "sendeltastudent.schoolis.cn",
+    "httpOnly": false,
+    "name": "SessionId",
+    "path": "/",
+    "sameSite": "Lax",
+    "secure": false,
+    "value": "82ad00f7-46ca-4406-8696-ac1d1bfc65af"
+  },
+  {
+    "domain": ".sendeltastudent.schoolis.cn",
+    "httpOnly": false,
+    "name": "HMACCOUNT",
+    "path": "/",
+    "sameSite": "Lax",
+    "secure": false,
+    "value": "3C888542731511C8"
+  },
+  {
+    "domain": ".sendeltastudent.schoolis.cn",
+    "expiry": 1779281457,
+    "httpOnly": false,
+    "name": "Hm_lvt_4f71d5631552c192190713bef03fe1d8",
+    "path": "/",
+    "sameSite": "Lax",
+    "secure": false,
+    "value": "1747745454"
+  }
+]
