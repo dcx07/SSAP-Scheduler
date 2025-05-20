@@ -6,7 +6,7 @@
     "path": "/",
     "sameSite": "Lax",
     "secure": false,
-    "value": "1747745457"
+    "value": "1747747044"
   },
   {
     "domain": "sendeltastudent.schoolis.cn",
@@ -15,7 +15,7 @@
     "path": "/",
     "sameSite": "Lax",
     "secure": false,
-    "value": "82ad00f7-46ca-4406-8696-ac1d1bfc65af"
+    "value": "e7fccccc-d9ef-45a1-ac5f-3b1b7cc8ce90"
   },
   {
     "domain": ".sendeltastudent.schoolis.cn",
@@ -24,16 +24,16 @@
     "path": "/",
     "sameSite": "Lax",
     "secure": false,
-    "value": "3C888542731511C8"
+    "value": "7CFAC6362F27D59A"
   },
   {
     "domain": ".sendeltastudent.schoolis.cn",
-    "expiry": 1779281457,
+    "expiry": 1779283043,
     "httpOnly": false,
     "name": "Hm_lvt_4f71d5631552c192190713bef03fe1d8",
     "path": "/",
     "sameSite": "Lax",
     "secure": false,
-    "value": "1747745454"
+    "value": "1747747040"
   }
 ]

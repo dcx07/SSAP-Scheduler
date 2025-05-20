@@ -7,39 +7,39 @@ from selenium.webdriver.edge.options import Options
 import time
 import json
 
-# ´ÓÃüÁîĞĞ²ÎÊı»ñÈ¡ÓÃ»§ÃûºÍÃÜÂë
+# ä»å‘½ä»¤è¡Œå‚æ•°è·å–ç”¨æˆ·åå’Œå¯†ç 
 username = sys.argv[1]
 password = sys.argv[2]
 
-# ÅäÖÃ Edge ä¯ÀÀÆ÷ÎªÎŞÍ·Ä£Ê½
+# é…ç½® Edge æµè§ˆå™¨ä¸ºæ— å¤´æ¨¡å¼
 options = Options()
-options.add_argument("--headless")  # ÆôÓÃÎŞÍ·Ä£Ê½
-options.add_argument("--disable-gpu")  # ½ûÓÃ GPU ¼ÓËÙ£¨¿ÉÑ¡£¬ÌáÉı¼æÈİĞÔ£©
+options.add_argument("--headless")  # å¯ç”¨æ— å¤´æ¨¡å¼
+options.add_argument("--disable-gpu")  # ç¦ç”¨ GPU åŠ é€Ÿï¼ˆå¯é€‰ï¼Œæå‡å…¼å®¹æ€§ï¼‰
 
-# Æô¶¯ Edge
+# å¯åŠ¨ Edge
 service = Service("msedgedriver.exe")
 driver = webdriver.Edge(service=service, options=options)
 
-# ´ò¿ªµÇÂ¼Ò³Ãæ
+# æ‰“å¼€ç™»å½•é¡µé¢
 driver.get("https://sendeltastudent.schoolis.cn")
 time.sleep(2)
 
-# ¶¨Î»ÓÃ»§ÃûÊäÈë¿ò²¢ÊäÈë
+# å®šä½ç”¨æˆ·åè¾“å…¥æ¡†å¹¶è¾“å…¥
 driver.find_element(By.XPATH, "//input[@ng-model='$ctrl.loginName']").send_keys(username)
 
-# ¶¨Î»ÃÜÂëÊäÈë¿ò²¢ÊäÈë
+# å®šä½å¯†ç è¾“å…¥æ¡†å¹¶è¾“å…¥
 driver.find_element(By.XPATH, "//input[@ng-model='$ctrl.passWord']").send_keys(password)
 
-# µã»÷µÇÂ¼°´Å¥
+# ç‚¹å‡»ç™»å½•æŒ‰é’®
 driver.find_element(By.XPATH, "//button[@ng-click='$ctrl.login()']").click()
 
 time.sleep(5)
 
-# »ñÈ¡µÇÂ¼ºóµÄ cookies
+# è·å–ç™»å½•åçš„ cookies
 cookies = driver.get_cookies()
 
 
-# ±£´æ cookies
+# ä¿å­˜ cookies
 with open("cookies.json", "w", encoding="utf-8") as f:
     json.dump(cookies, f, ensure_ascii=False, indent=2)
 
