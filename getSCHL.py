@@ -1,9 +1,14 @@
-# -*- coding: utf-8 -*-
+ï»¿# -*- coding: utf-8 -*-
 import requests
 import urllib3
 import json
+import re
+from datetime import datetime, timedelta
+from collections import defaultdict
+
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
+# 1. åŠ è½½ cookies
 cookie_keys = [
     "SessionId",
     "HMACCOUNT",
@@ -15,23 +20,57 @@ with open("cookies.json", "r", encoding="utf-8") as f:
     cookies_list = json.load(f)
 cookies = {c['name']: c['value'] for c in cookies_list if c['name'] in cookie_keys}
 
-
+# 2. è¯·æ±‚è¯¾è¡¨æ¥å£
 url = "https://sendeltastudent.schoolis.cn/api/Schedule/ListScheduleByParent"
-
-# ÉèÖÃÄãÏë²éÑ¯µÄÆğÖ¹ÈÕÆÚ£¨½¨ÒéÃ¿ÖÜ²éÑ¯Ò»´Î£©
 payload = {
     "beginTime": "2025-05-18",
     "endTime": "2025-05-24"
 }
-
 headers = {
     "Content-Type": "application/json",
-    "Referer": "https://sendeltastudent.schoolis.cn/",  # ÓĞĞ©·şÎñÆ÷ĞèÒª Referer ·ÀµÁÁ´
+    "Referer": "https://sendeltastudent.schoolis.cn/",
     "User-Agent": "Mozilla/5.0"
 }
-
 response = requests.post(url, json=payload, cookies=cookies, headers=headers, verify=False)
-
 data = response.json()
+
+# 3. å¾®è½¯æ—¶é—´æ ¼å¼è§£æå‡½æ•°
+def parse_ms_date(ms_date):
+    match = re.match(r'/Date\((\d+)([+-]\d{4})\)/', ms_date)
+    if not match:
+        return ms_date
+    timestamp_ms = int(match.group(1))
+    offset_str = match.group(2)
+    dt = datetime.utcfromtimestamp(timestamp_ms / 1000)
+    sign = 1 if offset_str.startswith('+') else -1
+    hours = int(offset_str[1:3])
+    minutes = int(offset_str[3:])
+    offset = timedelta(hours=hours, minutes=minutes)
+    dt = dt + sign * offset
+    return dt
+
+# 4. åˆ†ç»„ä¿å­˜ç»“æ„åŒ–æ•°æ®
+grouped = defaultdict(list)
+
 for item in data["data"]:
-    print(f"{item['name']} at {item['playgroundName']} from {item['beginTime']} to {item['endTime']}")
+    name = item["name"]
+    room = item.get("playgroundName") or "æœªæŒ‡å®šæ•™å®¤"
+    start = parse_ms_date(item["beginTime"])
+    end = parse_ms_date(item["endTime"])
+    weekday = start.strftime("%a")
+    teachers = item.get("teacherList", [])
+    teacher_names = ", ".join(t["name"] for t in teachers) if teachers else "æœªçŸ¥æ•™å¸ˆ"
+
+    grouped[weekday].append({
+        "name": name,
+        "room": room,
+        "start": start.isoformat(),
+        "end": end.isoformat(),
+        "teacher": teacher_names
+    })
+
+# 5. ä¿å­˜ä¸º JSON æ–‡ä»¶
+with open("schedule_grouped.json", "w", encoding="utf-8") as f:
+    json.dump(grouped, f, ensure_ascii=False, indent=2)
+
+print("âœ… è¯¾è¡¨å·²æˆåŠŸä¿å­˜ä¸º schedule_grouped.json")
