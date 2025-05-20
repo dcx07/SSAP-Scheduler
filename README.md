@@ -7,4 +7,6 @@ Reads user input parameter --username --password and return their class schedule
   
   make sure msedgedriver.exe and main.py are under the same directory
 
-usage: python main.py --[username] --[password]
+### Usage
+
+python main.py --[username] --[password]
