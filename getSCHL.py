@@ -20,11 +20,24 @@ with open("cookies.json", "r", encoding="utf-8") as f:
     cookies_list = json.load(f)
 cookies = {c['name']: c['value'] for c in cookies_list if c['name'] in cookie_keys}
 
+# === 新增：自动计算本周周日和周六 ===
+def get_week_range():
+    today = datetime.today()
+    # 以周日为一周的第一天
+    # weekday(): 周一=0, ..., 周日=6
+    days_since_sunday = (today.weekday() + 1) % 7
+    sunday = today - timedelta(days=days_since_sunday)
+    saturday = sunday + timedelta(days=6)
+    return sunday.strftime('%Y-%m-%d'), saturday.strftime('%Y-%m-%d')
+
+beginTime, endTime = get_week_range()
+# ================================
+
 # 2. 请求课表接口
 url = "https://sendeltastudent.schoolis.cn/api/Schedule/ListScheduleByParent"
 payload = {
-    "beginTime": "2025-05-18",
-    "endTime": "2025-05-24"
+    "beginTime": beginTime,
+    "endTime": endTime
 }
 headers = {
     "Content-Type": "application/json",
