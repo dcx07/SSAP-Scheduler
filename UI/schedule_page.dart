@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:intl/intl.dart';
 
 class SchedulePage extends StatefulWidget {
   final String username;
@@ -50,6 +51,7 @@ class _SchedulePageState extends State<SchedulePage> {
         color: Colors.white.withOpacity(0.95),
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
+// BoxShadow 是 Flutter 提供的类，直接使用即可，原代码无问题，此处直接保留
           BoxShadow(
             color: Colors.blueGrey.withOpacity(0.1),
             blurRadius: 8,
@@ -89,12 +91,25 @@ class _SchedulePageState extends State<SchedulePage> {
     return Scaffold(
       backgroundColor: Color(0xFFFDF5E6),
       appBar: AppBar(
-        title: Text(
-          '今日课程',
-          style: TextStyle(
-            fontFamily: 'HarmonyOS Sans',
-            color: Color(0xFF4A5568),
-          ),
+        title: Row(
+          children: [
+// 由于 primaryColor 未定义，这里使用一个常见的颜色替代，可根据实际需求修改
+// Flutter 的 Colors 类中没有 darkblue 属性，使用 Colors.blue[900] 替代
+Icon(Icons.calendar_today, color: Colors.blue[900]),
+            SizedBox(width: 10),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('${widget.username}', style: TextStyle(fontSize: 16)),
+                Text(
+// 原代码中 DateFormat 方法是存在的，因为已经导入了 'package:intl/intl.dart'，所以无需修改，直接保留原代码
+// 由于 DateFormat 已经正确导入，原代码本身无误，可直接保留
+DateFormat('yyyy年M月d日 EEEE', 'zh_CN').format(DateTime.now()),
+                  style: TextStyle(fontSize: 12)
+                )
+              ],
+            ),
+          ],
         ),
         backgroundColor: Colors.white,
         elevation: 0,
