@@ -1,16 +1,12 @@
 ﻿import subprocess
-import argparse
+import json
 
 def main():
-    # 创建参数解析器
-    parser = argparse.ArgumentParser(description="运行 GetCK.py 和 getSCHL.py")
-    parser.add_argument("--username", required=True, help="用户名")
-    parser.add_argument("--password", required=True, help="密码")
-    
-    # 解析参数
-    args = parser.parse_args()
-    username = args.username
-    password = args.password
+    # 从 config.json 读取用户名和密码
+    with open("config.json", "r", encoding="utf-8") as f:
+        config = json.load(f)
+    username = config["username"]
+    password = config["password"]
 
     # 运行 GetCK.py 抓取 cookies
     subprocess.run(["python", "GetCK_AUTO.py", username, password], check=True)
@@ -20,3 +16,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
