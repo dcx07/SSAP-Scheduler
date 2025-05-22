@@ -1,5 +1,5 @@
 # SSAP-Scheduler
-Reads user input parameter --username --password and return their class schedule in JSON format
+Reads username and password from config.json and return their class schedule in JSON format
 
 ## Prerequisites:
   
@@ -8,5 +8,6 @@ Reads user input parameter --username --password and return their class schedule
   make sure msedgedriver.exe and main.py are under the same directory
 
 ### Usage
+Make sure you have config.json in the same directory with main.py
 
-python main.py --[username] --[password]
+python main.py
