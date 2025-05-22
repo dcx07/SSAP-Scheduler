@@ -26,8 +26,8 @@ class _SchedulePageState extends State<SchedulePage> {
     setState(() => _isLoading = true);
     try {
       final response = await http.get(
-        Uri.parse('http://localhost:8000/schedule/${widget.username}'),
-      );
+  Uri.parse('http://10.0.2.2:5000/schedule/${widget.username}'),
+);
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
