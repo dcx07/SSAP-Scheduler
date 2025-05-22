@@ -83,11 +83,15 @@ for i, weekday in enumerate(weekdays):
             teachers = item.get("teacherList", [])
             teacher_names = ", ".join(t["name"] for t in teachers) if teachers else "未知教师"
 
+            # 只保留时间部分（不包含日期）
+            start_time = start.strftime("%H:%M")
+            end_time = end.strftime("%H:%M")
+
             daily_courses.append({
                 "name": name,
                 "room": room,
-                "start": start.isoformat(),
-                "end": end.isoformat(),
+                "start": start_time,
+                "end": end_time,
                 "teacher": teacher_names
             })
     
