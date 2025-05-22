@@ -24,20 +24,19 @@ cookies = {c['name']: c['value'] for c in cookies_list if c['name'] in cookie_ke
 def get_week_range():
     today = datetime.today()
     # 以周日为一周的第一天
-    # weekday(): 周一=0, ..., 周日=6
     days_since_sunday = (today.weekday() + 1) % 7
     sunday = today - timedelta(days=days_since_sunday)
     saturday = sunday + timedelta(days=6)
-    return sunday.strftime('%Y-%m-%d'), saturday.strftime('%Y-%m-%d')
+    return sunday, saturday
 
-beginTime, endTime = get_week_range()
+begin_time, end_time = get_week_range()
 # ================================
 
 # 2. 请求课表接口
 url = "https://sendeltastudent.schoolis.cn/api/Schedule/ListScheduleByParent"
 payload = {
-    "beginTime": beginTime,
-    "endTime": endTime
+    "beginTime": begin_time.strftime('%Y-%m-%d'),
+    "endTime": end_time.strftime('%Y-%m-%d')
 }
 headers = {
     "Content-Type": "application/json",
@@ -62,25 +61,41 @@ def parse_ms_date(ms_date):
     dt = dt + sign * offset
     return dt
 
-# 4. 分组保存结构化数据
-grouped = defaultdict(list)
+# 4. 计算每个星期几的日期并分组保存结构化数据
+weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+grouped = {}
 
-for item in data["data"]:
-    name = item["name"]
-    room = item.get("playgroundName") or "未指定教室"
-    start = parse_ms_date(item["beginTime"])
-    end = parse_ms_date(item["endTime"])
-    weekday = start.strftime("%a")
-    teachers = item.get("teacherList", [])
-    teacher_names = ", ".join(t["name"] for t in teachers) if teachers else "未知教师"
+for i, weekday in enumerate(weekdays):
+    # 计算星期几的日期
+    day_of_week = begin_time + timedelta(days=i)
+    date_str = day_of_week.strftime('%Y-%m-%d')
 
-    grouped[weekday].append({
-        "name": name,
-        "room": room,
-        "start": start.isoformat(),
-        "end": end.isoformat(),
-        "teacher": teacher_names
-    })
+    daily_courses = []
+    
+    for item in data["data"]:
+        name = item["name"]
+        room = item.get("playgroundName") or "未指定教室"
+        start = parse_ms_date(item["beginTime"])
+        end = parse_ms_date(item["endTime"])
+        item_weekday = start.strftime("%a")
+
+        if item_weekday == weekday:
+            teachers = item.get("teacherList", [])
+            teacher_names = ", ".join(t["name"] for t in teachers) if teachers else "未知教师"
+
+            daily_courses.append({
+                "name": name,
+                "room": room,
+                "start": start.isoformat(),
+                "end": end.isoformat(),
+                "teacher": teacher_names
+            })
+    
+    if daily_courses:
+        grouped[weekday] = {
+            "date": date_str,
+            "courses": daily_courses
+        }
 
 # 5. 保存为 JSON 文件
 with open("schedule_grouped.json", "w", encoding="utf-8") as f:
