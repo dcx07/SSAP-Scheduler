@@ -3,7 +3,85 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
+// 登录页
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
+  bool _isLoading = false;
+
+  Future<void> _login() async {
+    setState(() => _isLoading = true);
+    try {
+      // 写入 Backend/config.json
+      final configPath = 'd:/SSAP-Scheduler/Backend/config.json';
+      final configMap = {
+        'username': _usernameController.text,
+        'password': _passwordController.text,
+      };
+      await File(configPath).writeAsString(jsonEncode(configMap));
+
+      // 跳转到日程页
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder:
+                (_) => SchedulePage(
+                  username: _usernameController.text,
+                  password: _passwordController.text,
+                ),
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('登录失败: $e')));
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('登录')),
+      body: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextField(
+              controller: _usernameController,
+              decoration: const InputDecoration(labelText: '用户名'),
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: _passwordController,
+              decoration: const InputDecoration(labelText: '密码'),
+              obscureText: true,
+            ),
+            const SizedBox(height: 32),
+            _isLoading
+                ? const CircularProgressIndicator()
+                : ElevatedButton(onPressed: _login, child: const Text('登录')),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// 日程页
 class SchedulePage extends StatefulWidget {
   final String username;
   final String password; // 添加密码参数
@@ -31,10 +109,9 @@ class _SchedulePageState extends State<SchedulePage> {
   Future<void> _saveConfigAndFetchSchedule() async {
     setState(() => _isLoading = true);
     try {
-      // 获取应用文档目录
-      final appDir = await getApplicationDocumentsDirectory();
-      final configPath = '${appDir.path}/config.json';
-      final schedulePath = '${appDir.path}/schedule_grouped.json';
+      // 写入 Backend/config.json
+      final configPath = 'd:/SSAP-Scheduler/Backend/config.json';
+      final schedulePath = 'd:/SSAP-Scheduler/Backend/schedule_grouped.json';
 
       // 保存配置
       final configMap = {
@@ -44,10 +121,11 @@ class _SchedulePageState extends State<SchedulePage> {
 
       await File(configPath).writeAsString(jsonEncode(configMap));
 
-      // 运行 Python 脚本
-      final pythonScript =
-          'c:\\Users\\邓承轩\\source\\repos\\SSAP-Scheduler\\main.py';
-      final process = await Process.run('python', [pythonScript]);
+      // 运行 Python 脚本，指定工作目录
+      final pythonScript = 'main.py';
+      final process = await Process.run('python', [
+        pythonScript,
+      ], workingDirectory: 'd:/SSAP-Scheduler/Backend');
 
       if (process.exitCode != 0) {
         throw Exception('Python script error: ${process.stderr}');
@@ -57,8 +135,19 @@ class _SchedulePageState extends State<SchedulePage> {
       if (await File(schedulePath).exists()) {
         final jsonString = await File(schedulePath).readAsString();
         final data = jsonDecode(jsonString);
+
+        // 获取今天是周几
+        final weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        final todayKey = weekDays[DateTime.now().weekday - 1];
+
+        // 只显示今天的课程
+        List todayCourses = [];
+        if (data[todayKey] != null && data[todayKey]['courses'] is List) {
+          todayCourses = data[todayKey]['courses'];
+        }
+
         setState(() {
-          _courses = data['courses'];
+          _courses = todayCourses.reversed.toList();
           _isLoading = false;
         });
       } else {
@@ -67,7 +156,6 @@ class _SchedulePageState extends State<SchedulePage> {
     } catch (e) {
       print('Error processing schedule: $e');
       setState(() => _isLoading = false);
-      // 显示错误提示
       if (mounted) {
         ScaffoldMessenger.of(
           context,
@@ -105,11 +193,15 @@ class _SchedulePageState extends State<SchedulePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '⏰ ${course['time'] ?? ''}',
+              '⏰ ${course['start'] ?? ''} - ${course['end'] ?? ''}',
               style: TextStyle(fontFamily: 'Roboto', color: Color(0xFF718096)),
             ),
             Text(
-              '📍 ${course['location'] ?? ''}',
+              '📍 ${course['room'] ?? ''}',
+              style: TextStyle(fontFamily: 'Roboto', color: Color(0xFF718096)),
+            ),
+            Text(
+              '👨‍🏫 ${course['teacher'] ?? ''}',
               style: TextStyle(fontFamily: 'Roboto', color: Color(0xFF718096)),
             ),
           ],
@@ -167,4 +259,10 @@ class _SchedulePageState extends State<SchedulePage> {
               ),
     );
   }
+}
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting('zh_CN', null);
+  runApp(const MaterialApp(home: LoginPage()));
 }

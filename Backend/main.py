@@ -1,6 +1,9 @@
 ﻿# -*- coding: utf-8 -*-
 import subprocess
 import json
+import os
+
+    
 
 def main():
     # 从 config.json 读取用户名和密码
@@ -10,10 +13,10 @@ def main():
     password = config["password"]
 
     # 运行 GetCK.py 抓取 cookies
-    subprocess.run(["getCK_AUTO.exe", username, password], check=True)
+    subprocess.run(["python", "getCK_AUTO.py", username, password], check=True)
 
     # 运行 getSCHL.py 抓取数据
-    subprocess.run(["getSCHL.exe"], check=True)
+    subprocess.run(["python", "getSCHL.py"], check=True)
 
 if __name__ == "__main__":
     main()
