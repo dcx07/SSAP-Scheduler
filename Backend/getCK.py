@@ -8,8 +8,8 @@ import time
 import json
 
 # 从命令行参数获取用户名和密码
-username = sys.argv[1]
-password = sys.argv[2]
+username = "dengchengxuan"
+password = "dyjwo3-majjyg-Porris"
 
 # 配置 Edge 浏览器为无头模式
 options = Options()

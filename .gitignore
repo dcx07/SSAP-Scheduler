@@ -10,3 +10,6 @@
 /msedgedriver.exe
 /msedgedriver.exe
 /msedgedriver.exe
+/Backend/build
+/Backend/getCK_AUTO.spec
+*.spec
