@@ -21,8 +21,9 @@ class _LoginPageState extends State<LoginPage> {
   Future<void> _login() async {
     setState(() => _isLoading = true);
     try {
-      // 写入 Backend/config.json
-      final configPath = 'd:/SSAP-Scheduler/Backend/config.json';
+      // 动态获取 Backend 路径
+      final backendDir = await getBackendDir();
+      final configPath = '$backendDir/config.json';
       final configMap = {
         'username': _usernameController.text,
         'password': _passwordController.text,
@@ -109,9 +110,9 @@ class _SchedulePageState extends State<SchedulePage> {
   Future<void> _saveConfigAndFetchSchedule() async {
     setState(() => _isLoading = true);
     try {
-      // 写入 Backend/config.json
-      final configPath = 'd:/SSAP-Scheduler/Backend/config.json';
-      final schedulePath = 'd:/SSAP-Scheduler/Backend/schedule_grouped.json';
+      final backendDir = await getBackendDir();
+      final configPath = '$backendDir/config.json';
+      final schedulePath = '$backendDir/schedule_grouped.json';
 
       // 保存配置
       final configMap = {
@@ -120,12 +121,10 @@ class _SchedulePageState extends State<SchedulePage> {
       };
 
       await File(configPath).writeAsString(jsonEncode(configMap));
-
-      // 运行 Python 脚本，指定工作目录
       final pythonScript = 'main.py';
       final process = await Process.run('python', [
         pythonScript,
-      ], workingDirectory: 'd:/SSAP-Scheduler/Backend');
+      ], workingDirectory: backendDir);
 
       if (process.exitCode != 0) {
         throw Exception('Python script error: ${process.stderr}');
@@ -259,6 +258,17 @@ class _SchedulePageState extends State<SchedulePage> {
               ),
     );
   }
+}
+
+Future<String> getBackendDir() async {
+  // 获取UI目录的父目录的父目录，然后拼接Backend
+  final uiDir = Directory.current;
+  final projectRoot = uiDir.parent.parent; // D:\SSAP-Scheduler
+  final backendDir = Directory('${projectRoot.path}/Backend');
+  if (!await backendDir.exists()) {
+    await backendDir.create(recursive: true);
+  }
+  return backendDir.absolute.path;
 }
 
 void main() async {
