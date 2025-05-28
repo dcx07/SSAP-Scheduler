@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:intl/intl.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 // 登录页
@@ -167,12 +166,12 @@ class _SchedulePageState extends State<SchedulePage> {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.95),
+        color: Colors.white.withValues(alpha: 0.95),
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           // BoxShadow 是 Flutter 提供的类，直接使用即可，原代码无问题，此处直接保留
           BoxShadow(
-            color: Colors.blueGrey.withOpacity(0.1),
+            color: Colors.blueGrey.withValues(alpha: 0.1),
             blurRadius: 8,
             spreadRadius: 2,
           ),
