@@ -20,8 +20,23 @@ except ImportError:
     from webdriver_manager.microsoft import EdgeChromiumDriverManager
     from webdriver_manager.firefox import GeckoDriverManager
 
-username = sys.argv[1]
-password = sys.argv[2]
+try:
+    with open("config.json", "r", encoding="utf-8") as f:
+        config = json.load(f)
+    username = config.get("username")
+    password = config.get("password")
+    if not username or not password:
+        print("错误：config.json 文件中未找到 username 或 password。")
+        sys.exit(1)
+except FileNotFoundError:
+    print("错误：未找到 config.json 文件。请创建该文件并填入用户名和密码。")
+    sys.exit(1)
+except json.JSONDecodeError:
+    print("错误：config.json 文件格式不正确。")
+    sys.exit(1)
+except Exception as e:
+    print(f"读取配置文件时发生错误: {e}")
+    sys.exit(1)
 
 driver = None
 
