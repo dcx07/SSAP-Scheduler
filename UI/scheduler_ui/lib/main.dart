@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:intl/intl.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 // 登录页
@@ -145,7 +144,8 @@ class _LoginPageState extends State<LoginPage> {
                     height: 48,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromARGB(255, 133, 128, 240),
+                        backgroundColor:
+                            const Color.fromARGB(255, 133, 128, 240),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -211,9 +211,12 @@ class _SchedulePageState extends State<SchedulePage> {
 
       await File(configPath).writeAsString(jsonEncode(configMap));
       final pythonScript = 'main.py';
-      final process = await Process.run('python', [
-        pythonScript,
-      ], workingDirectory: backendDir);
+      final process = await Process.run(
+          'python',
+          [
+            pythonScript,
+          ],
+          workingDirectory: backendDir);
 
       if (process.exitCode != 0) {
         throw Exception('Python script error: ${process.stderr}');
