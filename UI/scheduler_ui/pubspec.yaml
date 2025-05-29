@@ -4,7 +4,7 @@ publish_to: 'none'
 version: 0.1.0
 
 environment:
-  sdk: ^3.7.2
+  sdk: ^3.4.1
 
 dependencies:
   flutter:
@@ -20,3 +20,13 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  assets:
+    # - assets/fonts/Noto_Sans_SC/
+
+  fonts:
+    - family: NotoSansSC
+      fonts:
+        - asset: assets/fonts/Noto_Sans_SC/static/NotoSansSC-Regular.ttf
+        - asset: assets/fonts/Noto_Sans_SC/static/NotoSansSC-Bold.ttf
+          weight: 700

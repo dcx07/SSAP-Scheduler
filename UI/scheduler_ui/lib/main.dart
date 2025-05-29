@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 // 登录页
@@ -34,11 +35,10 @@ class _LoginPageState extends State<LoginPage> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder:
-                (_) => SchedulePage(
-                  username: _usernameController.text,
-                  password: _passwordController.text,
-                ),
+            builder: (_) => SchedulePage(
+              username: _usernameController.text,
+              password: _passwordController.text,
+            ),
           ),
         );
       }
@@ -54,7 +54,36 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('登录')),
+      backgroundColor: const Color(0xFFFDF5E6), // 黄白色背景
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(90),
+        child: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          flexibleSpace: Container(
+            height: 90,
+            decoration: const BoxDecoration(
+              color: Color(0xFF6C63FF), // 蓝紫色长条
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(24),
+                bottomRight: Radius.circular(24),
+              ),
+            ),
+            alignment: Alignment.bottomLeft,
+            padding: const EdgeInsets.only(left: 32, bottom: 18),
+            child: const Text(
+              '登录',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 28,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 2,
+                fontFamily: 'NotoSansSC',
+              ),
+            ),
+          ),
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -62,18 +91,79 @@ class _LoginPageState extends State<LoginPage> {
           children: [
             TextField(
               controller: _usernameController,
-              decoration: const InputDecoration(labelText: '用户名'),
+              decoration: const InputDecoration(
+                labelText: '用户名',
+                labelStyle: TextStyle(
+                  color: Color(0xFFFFB870), // 低饱和度橙色
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  fontFamily: 'NotoSansSC',
+                ),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Color(0xFFFFB870)),
+                ),
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Color(0xFFFFB870), width: 2),
+                ),
+              ),
+              style: const TextStyle(
+                fontSize: 18,
+                fontFamily: 'NotoSansSC',
+                fontWeight: FontWeight.w600,
+              ),
             ),
             const SizedBox(height: 16),
             TextField(
               controller: _passwordController,
-              decoration: const InputDecoration(labelText: '密码'),
+              decoration: const InputDecoration(
+                labelText: '密码',
+                labelStyle: TextStyle(
+                  color: Color(0xFFFFB870),
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  fontFamily: 'NotoSansSC',
+                ),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Color(0xFFFFB870)),
+                ),
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Color(0xFFFFB870), width: 2),
+                ),
+              ),
               obscureText: true,
+              style: const TextStyle(
+                fontSize: 18,
+                fontFamily: 'NotoSansSC',
+                fontWeight: FontWeight.w600,
+              ),
             ),
             const SizedBox(height: 32),
             _isLoading
                 ? const CircularProgressIndicator()
-                : ElevatedButton(onPressed: _login, child: const Text('登录')),
+                : SizedBox(
+                    width: double.infinity,
+                    height: 48,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color.fromARGB(255, 133, 128, 240),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        elevation: 2,
+                      ),
+                      onPressed: _login,
+                      child: const Text(
+                        '登录',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 2,
+                          color: Colors.white,
+                          fontFamily: 'NotoSansSC',
+                        ),
+                      ),
+                    ),
+                  ),
           ],
         ),
       ),
@@ -84,7 +174,7 @@ class _LoginPageState extends State<LoginPage> {
 // 日程页
 class SchedulePage extends StatefulWidget {
   final String username;
-  final String password; // 添加密码参数
+  final String password;
 
   const SchedulePage({
     super.key,
@@ -164,27 +254,33 @@ class _SchedulePageState extends State<SchedulePage> {
 
   Widget _buildCourseTile(Map<String, dynamic> course) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.95),
+        color: Colors.white.withOpacity(0.95),
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
-          // BoxShadow 是 Flutter 提供的类，直接使用即可，原代码无问题，此处直接保留
           BoxShadow(
-            color: Colors.blueGrey.withValues(alpha: 0.1),
+            color: Colors.blueGrey.withOpacity(0.1),
             blurRadius: 8,
             spreadRadius: 2,
           ),
         ],
       ),
       child: ListTile(
-        leading: Text(course['emoji'] ?? '', style: TextStyle(fontSize: 24)),
+        leading: Text(
+          course['emoji'] ?? '',
+          style: const TextStyle(
+            fontSize: 24,
+            fontFamily: 'NotoSansSC',
+            fontWeight: FontWeight.w600,
+          ),
+        ),
         title: Text(
           course['name'] ?? '',
-          style: TextStyle(
-            fontFamily: 'HarmonyOS Sans',
+          style: const TextStyle(
             fontWeight: FontWeight.w600,
             color: Color(0xFF4A5568),
+            fontFamily: 'NotoSansSC',
           ),
         ),
         subtitle: Column(
@@ -192,15 +288,27 @@ class _SchedulePageState extends State<SchedulePage> {
           children: [
             Text(
               '⏰ ${course['start'] ?? ''} - ${course['end'] ?? ''}',
-              style: TextStyle(fontFamily: 'Roboto', color: Color(0xFF718096)),
+              style: const TextStyle(
+                color: Color(0xFF718096),
+                fontFamily: 'NotoSansSC',
+                fontWeight: FontWeight.w600,
+              ),
             ),
             Text(
               '📍 ${course['room'] ?? ''}',
-              style: TextStyle(fontFamily: 'Roboto', color: Color(0xFF718096)),
+              style: const TextStyle(
+                color: Color(0xFF718096),
+                fontFamily: 'NotoSansSC',
+                fontWeight: FontWeight.w600,
+              ),
             ),
             Text(
               '👨‍🏫 ${course['teacher'] ?? ''}',
-              style: TextStyle(fontFamily: 'Roboto', color: Color(0xFF718096)),
+              style: const TextStyle(
+                color: Color(0xFF718096),
+                fontFamily: 'NotoSansSC',
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ],
         ),
@@ -211,23 +319,30 @@ class _SchedulePageState extends State<SchedulePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFFDF5E6),
+      backgroundColor: const Color(0xFFFDF5E6),
       appBar: AppBar(
         title: Row(
           children: [
-            // 由于 primaryColor 未定义，这里使用一个常见的颜色替代，可根据实际需求修改
-            // Flutter 的 Colors 类中没有 darkblue 属性，使用 Colors.blue[900] 替代
             Icon(Icons.calendar_today, color: Colors.blue[900]),
-            SizedBox(width: 10),
+            const SizedBox(width: 10),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(widget.username, style: TextStyle(fontSize: 16)),
                 Text(
-                  // 原代码中 DateFormat 方法是存在的，因为已经导入了 'package:intl/intl.dart'，所以无需修改，直接保留原代码
-                  // 由于 DateFormat 已经正确导入，原代码本身无误，可直接保留
+                  widget.username,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontFamily: 'NotoSansSC',
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                Text(
                   DateFormat('yyyy年M月d日 EEEE', 'zh_CN').format(DateTime.now()),
-                  style: TextStyle(fontSize: 12),
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontFamily: 'NotoSansSC',
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ],
             ),
@@ -237,24 +352,23 @@ class _SchedulePageState extends State<SchedulePage> {
         elevation: 0,
         actions: [
           IconButton(
-            icon: Icon(Icons.refresh, color: Color(0xFF6C63FF)),
+            icon: const Icon(Icons.refresh, color: Color(0xFF6C63FF)),
             onPressed: _saveConfigAndFetchSchedule,
           ),
         ],
       ),
-      body:
-          _isLoading
-              ? Center(
-                child: CircularProgressIndicator(color: Color(0xFF6C63FF)),
-              )
-              : ListView.builder(
-                itemCount: _courses.length,
-                itemBuilder: (context, index) {
-                  return _buildCourseTile(
-                    Map<String, dynamic>.from(_courses[index]),
-                  );
-                },
-              ),
+      body: _isLoading
+          ? const Center(
+              child: CircularProgressIndicator(color: Color(0xFF6C63FF)),
+            )
+          : ListView.builder(
+              itemCount: _courses.length,
+              itemBuilder: (context, index) {
+                return _buildCourseTile(
+                  Map<String, dynamic>.from(_courses[index]),
+                );
+              },
+            ),
     );
   }
 }
@@ -273,5 +387,12 @@ Future<String> getBackendDir() async {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('zh_CN', null);
-  runApp(const MaterialApp(home: LoginPage()));
+  runApp(
+    MaterialApp(
+      home: const LoginPage(),
+      theme: ThemeData(
+        fontFamily: 'NotoSansSC', // 全局通用中文字体
+      ),
+    ),
+  );
 }
