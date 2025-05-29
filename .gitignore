@@ -13,3 +13,8 @@
 /Backend/build
 /Backend/getCK_AUTO.spec
 *.spec
+/UI/Backend/main.exe
+/Backend/dist/getCK_AUTO.exe
+/Backend/dist/main.exe
+/Backend/dist/getCK_AUTO.exe
+/Backend/dist/main.exe
