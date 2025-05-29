@@ -42,9 +42,11 @@ class _LoginPageState extends State<LoginPage> {
         );
       }
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('登录失败: $e')));
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('登录失败: $e')));
+      }
     } finally {
       setState(() => _isLoading = false);
     }
@@ -183,10 +185,10 @@ class SchedulePage extends StatefulWidget {
   });
 
   @override
-  _SchedulePageState createState() => _SchedulePageState();
+  SchedulePageState createState() => SchedulePageState();
 }
 
-class _SchedulePageState extends State<SchedulePage> {
+class SchedulePageState extends State<SchedulePage> {
   List<dynamic> _courses = [];
   bool _isLoading = true;
 
@@ -245,7 +247,7 @@ class _SchedulePageState extends State<SchedulePage> {
         throw Exception('Schedule file not found');
       }
     } catch (e) {
-      print('Error processing schedule: $e');
+      debugPrint('Error processing schedule: $e');
       setState(() => _isLoading = false);
       if (mounted) {
         ScaffoldMessenger.of(
@@ -259,11 +261,11 @@ class _SchedulePageState extends State<SchedulePage> {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.95),
+        color: Colors.white.withValues(alpha: 0.95),
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.blueGrey.withOpacity(0.1),
+            color: Colors.blueGrey.withValues(alpha: 0.1),
             blurRadius: 8,
             spreadRadius: 2,
           ),
