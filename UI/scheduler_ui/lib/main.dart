@@ -212,16 +212,14 @@ class SchedulePageState extends State<SchedulePage> {
       };
 
       await File(configPath).writeAsString(jsonEncode(configMap));
-      final pythonScript = 'main.py';
-      final process = await Process.run(
-          'python',
-          [
-            pythonScript,
-          ],
+
+      // 使用EXE文件替代Python脚本
+      final exeFile = 'main.exe';
+      final process = await Process.run(exeFile, [], // 不需要传递脚本名称作为参数
           workingDirectory: backendDir);
 
       if (process.exitCode != 0) {
-        throw Exception('Python script error: ${process.stderr}');
+        throw Exception('EXE execution error: ${process.stderr}');
       }
 
       // 读取生成的日程数据
