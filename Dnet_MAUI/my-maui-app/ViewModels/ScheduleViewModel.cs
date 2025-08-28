@@ -1,45 +1,60 @@
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MyMauiApp.Models;
 using MyMauiApp.Services;
 
 namespace MyMauiApp.ViewModels
 {
-    public class ScheduleViewModel : ObservableObject
+    public partial class ScheduleViewModel : ObservableObject, IQueryAttributable
     {
         private readonly ScheduleService _scheduleService;
+
+        [ObservableProperty]
         private ObservableCollection<Course> _courses;
+
+        [ObservableProperty]
         private bool _isLoading;
 
-        public ScheduleViewModel()
+        [ObservableProperty]
+        private string _username = "";
+
+        [ObservableProperty]
+        private string _password = "";
+
+        public ScheduleViewModel(ScheduleService scheduleService)
         {
-            _scheduleService = new ScheduleService();
+            _scheduleService = scheduleService;
             Courses = new ObservableCollection<Course>();
-            FetchScheduleCommand = new RelayCommand(async () => await FetchSchedule());
             IsLoading = false;
         }
 
-        public ObservableCollection<Course> Courses
+        public void ApplyQueryAttributes(IDictionary<string, object> query)
         {
-            get => _courses;
-            set => SetProperty(ref _courses, value);
+            if (query.TryGetValue("username", out var username))
+                Username = Uri.UnescapeDataString(username.ToString() ?? "");
+            
+            if (query.TryGetValue("password", out var password))
+                Password = Uri.UnescapeDataString(password.ToString() ?? "");
+
+            // Load schedule when navigating to this page
+            _ = FetchScheduleCommand.ExecuteAsync(null);
         }
 
-        public bool IsLoading
-        {
-            get => _isLoading;
-            set => SetProperty(ref _isLoading, value);
-        }
-
-        public ICommand FetchScheduleCommand { get; }
-
+        [RelayCommand]
         private async Task FetchSchedule()
         {
+            if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Password))
+                return;
+
             IsLoading = true;
             try
             {
-                var todayCourses = await _scheduleService.GetTodayCoursesAsync();
+                // Get the Backend directory - assuming it's in the parent directory of the app
+                var backendDir = Path.Combine(FileSystem.AppDataDirectory, "..", "..", "Backend");
+                var todayCourses = await _scheduleService.FetchTodayCoursesAsync(Username, Password, backendDir);
+                
                 Courses.Clear();
                 foreach (var course in todayCourses)
                 {
@@ -48,7 +63,7 @@ namespace MyMauiApp.ViewModels
             }
             catch (Exception ex)
             {
-                // Handle exceptions (e.g., show a message to the user)
+                await Application.Current?.MainPage?.DisplayAlert("错误", $"获取课程表失败: {ex.Message}", "确定");
             }
             finally
             {

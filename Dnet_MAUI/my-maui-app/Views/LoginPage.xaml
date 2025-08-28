@@ -3,51 +3,47 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="my_maui_app.Views.LoginPage"
-             BackgroundColor="#FDF5E6">
+             x:Class="MyMauiApp.Views.LoginPage"
+             BackgroundColor="{StaticResource LoginBackground}">
 
     <ContentPage.Content>
         <StackLayout Padding="24" VerticalOptions="Center">
-            <Label Text="登录"
+            <Label Text="SSAP 课程表"
                    FontSize="28"
                    FontAttributes="Bold"
-                   TextColor="White"
-                   HorizontalOptions="Start"
-                   Margin="0,0,0,18">
-                <Label.Background>
-                    <BoxView Color="#6C63FF" />
-                </Label.Background>
-            </Label>
+                   TextColor="{StaticResource Primary}"
+                   HorizontalOptions="Center"
+                   Margin="0,0,0,40" />
 
-            <Entry x:Name="UsernameEntry"
+            <Entry Text="{Binding Username}"
                    Placeholder="用户名"
-                   TextColor="#4A5568"
-                   PlaceholderColor="#FFB870"
+                   TextColor="{StaticResource TextColor}"
+                   PlaceholderColor="{StaticResource AccentColor}"
                    FontSize="18"
                    Margin="0,0,0,16" />
 
-            <Entry x:Name="PasswordEntry"
+            <Entry Text="{Binding Password}"
                    Placeholder="密码"
                    IsPassword="True"
-                   TextColor="#4A5568"
-                   PlaceholderColor="#FFB870"
+                   TextColor="{StaticResource TextColor}"
+                   PlaceholderColor="{StaticResource AccentColor}"
                    FontSize="18"
                    Margin="0,0,0,32" />
 
-            <Button x:Name="LoginButton"
-                    Text="登录"
-                    BackgroundColor="#8580F0"
+            <Button Text="登录"
+                    Command="{Binding LoginCommand}"
+                    BackgroundColor="{StaticResource PrimaryButton}"
                     TextColor="White"
                     FontSize="20"
                     HeightRequest="48"
                     CornerRadius="12"
-                    Clicked="OnLoginButtonClicked" />
+                    IsEnabled="{Binding IsLoading, Converter={StaticResource InvertedBoolConverter}}" />
 
-            <ActivityIndicator x:Name="LoadingIndicator"
-                               IsVisible="False"
-                               IsRunning="False"
-                               Color="#6C63FF"
-                               HorizontalOptions="Center" />
+            <ActivityIndicator IsVisible="{Binding IsLoading}"
+                               IsRunning="{Binding IsLoading}"
+                               Color="{StaticResource Primary}"
+                               HorizontalOptions="Center"
+                               Margin="0,16,0,0" />
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

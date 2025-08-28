@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:local="clr-namespace:MyMauiApp.Views"
+       x:Class="MyMauiApp.AppShell">
+
+    <Shell.Resources>
+        <ResourceDictionary>
+            <Style x:Key="BaseShellItemStyle" TargetType="BaseShellItem">
+                <Setter Property="Shell.BackgroundColor" Value="{StaticResource Primary}" />
+                <Setter Property="Shell.ForegroundColor" Value="White" />
+            </Style>
+            <Style TargetType="TabBar" BasedOn="{StaticResource BaseShellItemStyle}" />
+            <Style TargetType="FlyoutItem" BasedOn="{StaticResource BaseShellItemStyle}" />
+        </ResourceDictionary>
+    </Shell.Resources>
+
+    <TabBar>
+        <ShellContent Title="登录"
+                      Icon="user.png"
+                      Route="LoginPage"
+                      ContentTemplate="{DataTemplate local:LoginPage}" />
+                      
+        <ShellContent Title="课表"
+                      Icon="calendar.png"
+                      Route="SchedulePage"
+                      ContentTemplate="{DataTemplate local:SchedulePage}" />
+    </TabBar>
+
+</Shell>

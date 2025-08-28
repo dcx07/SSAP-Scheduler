@@ -1,13 +1,15 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using Microsoft.Maui.Controls;
+using MyMauiApp.Services;
 
-namespace my_maui_app.ViewModels
+namespace MyMauiApp.ViewModels
 {
     public class LoginViewModel : INotifyPropertyChanged
     {
-        private string _username;
-        private string _password;
+        private string _username = "";
+        private string _password = "";
         private bool _isLoading;
 
         public string Username
@@ -44,25 +46,27 @@ namespace my_maui_app.ViewModels
 
         public LoginViewModel()
         {
-            LoginCommand = new Command(async () => await Login());
+            LoginCommand = new Command(async () => await LoginAsync());
         }
 
-        private async Task Login()
+        public async Task LoginAsync()
         {
             IsLoading = true;
             try
             {
-                // Implement login logic here, such as calling a service to authenticate
-                // For example:
-                // var result = await AuthService.Login(Username, Password);
-                // if (result.IsSuccess)
-                // {
-                //     // Navigate to the schedule page
-                // }
+                // Validate input
+                if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Password))
+                {
+                    await Application.Current?.MainPage?.DisplayAlert("错误", "请输入用户名和密码", "确定");
+                    return;
+                }
+
+                // Navigate to schedule page
+                await Shell.Current.GoToAsync($"//SchedulePage?username={Uri.EscapeDataString(Username)}&password={Uri.EscapeDataString(Password)}");
             }
             catch (Exception ex)
             {
-                // Handle login failure (e.g., show a message)
+                await Application.Current?.MainPage?.DisplayAlert("错误", $"登录失败: {ex.Message}", "确定");
             }
             finally
             {
