@@ -3,45 +3,57 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
+using MyMauiApp.Models;
 
 namespace MyMauiApp.Services
 {
     public class ScheduleService
     {
-        private readonly string _backendDir;
-
-        public ScheduleService(string backendDir)
+        public async Task<List<Course>> FetchTodayCoursesAsync(string username, string password, string backendDir)
         {
-            _backendDir = backendDir;
-        }
-
-        public async Task<List<Course>> FetchTodayCoursesAsync(string username, string password)
-        {
-            var configPath = Path.Combine(_backendDir, "config.json");
-            var schedulePath = Path.Combine(_backendDir, "schedule_grouped.json");
+            var configPath = Path.Combine(backendDir, "config.json");
+            var schedulePath = Path.Combine(backendDir, "schedule_grouped.json");
 
             var config = new { Username = username, Password = password };
             await File.WriteAllTextAsync(configPath, JsonSerializer.Serialize(config));
 
-            // Execute the external process (e.g., an EXE file)
-            var exeFile = "main.exe";
-            var processStartInfo = new System.Diagnostics.ProcessStartInfo
+            // Execute the external process (e.g., main.py or main.exe)
+            var pythonFile = Path.Combine(backendDir, "main.py");
+            var exeFile = Path.Combine(backendDir, "main.exe");
+            
+            var processStartInfo = new System.Diagnostics.ProcessStartInfo();
+
+            // Try to run Python script first, then exe
+            if (File.Exists(pythonFile))
             {
-                FileName = exeFile,
-                WorkingDirectory = _backendDir,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                UseShellExecute = false,
-                CreateNoWindow = true
-            };
+                processStartInfo.FileName = "python";
+                processStartInfo.Arguments = "main.py";
+            }
+            else if (File.Exists(exeFile))
+            {
+                processStartInfo.FileName = exeFile;
+            }
+            else
+            {
+                throw new FileNotFoundException("Neither main.py nor main.exe found in backend directory");
+            }
+
+            processStartInfo.WorkingDirectory = backendDir;
+            processStartInfo.RedirectStandardOutput = true;
+            processStartInfo.RedirectStandardError = true;
+            processStartInfo.UseShellExecute = false;
+            processStartInfo.CreateNoWindow = true;
 
             using (var process = System.Diagnostics.Process.Start(processStartInfo))
             {
-                await process.WaitForExitAsync();
-                if (process.ExitCode != 0)
+                if (process != null)
                 {
-                    var error = await process.StandardError.ReadToEndAsync();
-                    throw new Exception($"EXE execution error: {error}");
+                    await process.WaitForExitAsync();
+                    if (process.ExitCode != 0)
+                    {
+                        var error = await process.StandardError.ReadToEndAsync();
+                        throw new Exception($"Backend execution error: {error}");
+                    }
                 }
             }
 
@@ -63,12 +75,12 @@ namespace MyMauiApp.Services
                 {
                     courseList.Add(new Course
                     {
-                        Name = course.GetProperty("name").GetString(),
-                        Start = course.GetProperty("start").GetString(),
-                        End = course.GetProperty("end").GetString(),
-                        Room = course.GetProperty("room").GetString(),
-                        Teacher = course.GetProperty("teacher").GetString(),
-                        Emoji = course.GetProperty("emoji").GetString()
+                        Name = course.GetProperty("name").GetString() ?? "",
+                        Start = course.GetProperty("start").GetString() ?? "",
+                        End = course.GetProperty("end").GetString() ?? "",
+                        Room = course.GetProperty("room").GetString() ?? "",
+                        Teacher = course.GetProperty("teacher").GetString() ?? "",
+                        Emoji = course.GetProperty("emoji").GetString() ?? ""
                     });
                 }
 

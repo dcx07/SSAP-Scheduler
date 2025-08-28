@@ -1,26 +1,13 @@
-using System;
-using Microsoft.Maui.Controls;
-using my_maui_app.ViewModels;
+using MyMauiApp.ViewModels;
 
-namespace my_maui_app.Views
+namespace MyMauiApp.Views
 {
     public partial class LoginPage : ContentPage
     {
-        private readonly LoginViewModel _viewModel;
-
-        public LoginPage()
+        public LoginPage(LoginViewModel viewModel)
         {
             InitializeComponent();
-            _viewModel = new LoginViewModel();
-            BindingContext = _viewModel;
-        }
-
-        private async void OnLoginButtonClicked(object sender, EventArgs e)
-        {
-            if (_viewModel.IsLoading)
-                return;
-
-            await _viewModel.LoginAsync();
+            BindingContext = viewModel;
         }
     }
 }
