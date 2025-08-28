@@ -80,7 +80,7 @@ namespace MyMauiApp.Services
                         End = course.GetProperty("end").GetString() ?? "",
                         Room = course.GetProperty("room").GetString() ?? "",
                         Teacher = course.GetProperty("teacher").GetString() ?? "",
-                        Emoji = course.GetProperty("emoji").GetString() ?? ""
+                        Emoji = course.TryGetProperty("emoji", out var emojiProp) ? emojiProp.GetString() ?? "📚" : "📚"
                     });
                 }
 

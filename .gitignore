@@ -18,3 +18,9 @@
 /Backend/dist/main.exe
 /Backend/dist/getCK_AUTO.exe
 /Backend/dist/main.exe
+
+# .NET build artifacts
+**/bin/
+**/obj/
+**/Debug/
+**/Release/
