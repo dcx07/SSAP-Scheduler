@@ -1,0 +1,33 @@
+<resources>
+  <Style x:Key="LoginPageStyle" TargetType="ContentPage">
+    <Setter Property="BackgroundColor" Value="#FDF5E6" />
+  </Style>
+  
+  <Style x:Key="LoginButtonStyle" TargetType="Button">
+    <Setter Property="BackgroundColor" Value="#857EF0" />
+    <Setter Property="TextColor" Value="White" />
+    <Setter Property="FontSize" Value="20" />
+    <Setter Property="FontAttributes" Value="Bold" />
+    <Setter Property="CornerRadius" Value="12" />
+    <Setter Property="HeightRequest" Value="48" />
+  </Style>
+  
+  <Style x:Key="TextFieldStyle" TargetType="Entry">
+    <Setter Property="TextColor" Value="#4A5568" />
+    <Setter Property="FontSize" Value="18" />
+    <Setter Property="FontAttributes" Value="Bold" />
+    <Setter Property="PlaceholderColor" Value="#FFB870" />
+    <Setter Property="Margin" Value="0,0,0,16" />
+  </Style>
+  
+  <Style x:Key="SchedulePageStyle" TargetType="ContentPage">
+    <Setter Property="BackgroundColor" Value="#FDF5E6" />
+  </Style>
+  
+  <Style x:Key="CourseTileStyle" TargetType="Frame">
+    <Setter Property="BackgroundColor" Value="White" />
+    <Setter Property="CornerRadius" Value="12" />
+    <Setter Property="Margin" Value="16,8" />
+    <Setter Property="HasShadow" Value="True" />
+  </Style>
+</resources>

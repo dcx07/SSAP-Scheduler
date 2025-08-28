@@ -1,0 +1,63 @@
+<Content of /my-maui-app/my-maui-app/Views/SchedulePage.xaml>
+
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="my_maui_app.Views.SchedulePage"
+             BackgroundColor="#FDF5E6">
+
+    <ContentPage.Content>
+        <StackLayout Padding="24" VerticalOptions="CenterAndExpand">
+            <Label Text="{Binding Username}"
+                   FontSize="16"
+                   FontFamily="NotoSansSC"
+                   FontAttributes="Bold" />
+            <Label Text="{Binding CurrentDate, StringFormat='{}{0:yyyy年M月d日 EEEE}'}"
+                   FontSize="12"
+                   FontFamily="NotoSansSC"
+                   FontAttributes="Bold" />
+
+            <Button Text="刷新"
+                    Command="{Binding RefreshCommand}"
+                    BackgroundColor="#6C63FF"
+                    TextColor="White"
+                    CornerRadius="12"
+                    Margin="0,16,0,0" />
+
+            <CollectionView ItemsSource="{Binding Courses}"
+                            Margin="0,16,0,0">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame BackgroundColor="White"
+                               CornerRadius="12"
+                               Margin="0,8"
+                               HasShadow="True">
+                            <StackLayout Padding="16">
+                                <Label Text="{Binding Emoji}"
+                                       FontSize="24"
+                                       FontFamily="NotoSansSC" />
+                                <Label Text="{Binding Name}"
+                                       FontAttributes="Bold"
+                                       FontFamily="NotoSansSC" />
+                                <Label Text="{Binding Start} - {Binding End}"
+                                       TextColor="#718096"
+                                       FontFamily="NotoSansSC" />
+                                <Label Text="{Binding Room}"
+                                       TextColor="#718096"
+                                       FontFamily="NotoSansSC" />
+                                <Label Text="{Binding Teacher}"
+                                       TextColor="#718096"
+                                       FontFamily="NotoSansSC" />
+                            </StackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <ActivityIndicator IsVisible="{Binding IsLoading}" 
+                               IsRunning="{Binding IsLoading}" 
+                               Color="#6C63FF" 
+                               VerticalOptions="CenterAndExpand" />
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
