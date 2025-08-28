@@ -1,0 +1,1 @@
+/home/runner/work/SSAP-Scheduler/SSAP-Scheduler/Dnet_MAUI/my-maui-app/obj/Debug/net8.0-windows10.0.19041.0/my-maui-app.csproj.AssemblyReference.cache
