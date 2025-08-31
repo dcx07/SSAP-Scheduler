@@ -17,12 +17,10 @@
 
     <TabBar>
         <ShellContent Title="登录"
-                      Icon="user.png"
                       Route="LoginPage"
                       ContentTemplate="{DataTemplate local:LoginPage}" />
                       
         <ShellContent Title="课表"
-                      Icon="calendar.png"
                       Route="SchedulePage"
                       ContentTemplate="{DataTemplate local:SchedulePage}" />
     </TabBar>
