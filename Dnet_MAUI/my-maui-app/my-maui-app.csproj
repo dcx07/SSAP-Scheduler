@@ -4,18 +4,15 @@
 		<OutputType>WinExe</OutputType>
 		<MauiSingleProject>true</MauiSingleProject>
 		<UseMaui>true</UseMaui>
-		<!-- 修正后的目标框架配置 -->
-		<TargetFrameworks>net8.0-android;net8.0-ios;net8.0-maccatalyst</TargetFrameworks>
-		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.19041.0</TargetFrameworks>
+		<!-- Windows-only target framework configuration -->
+		<TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+		<EnableWindowsTargeting>true</EnableWindowsTargeting>
 		<RootNamespace>SSAP_Scheduler</RootNamespace>
 		<UseMauiEssentials>true</UseMauiEssentials>
 		<LaunchSettingsFilePath>$(MSBuildProjectDirectory)\Properties\launchSettings.json</LaunchSettingsFilePath>
 		<WindowsPackageType>None</WindowsPackageType>
 		<!-- Display Info -->
 		<ApplicationTitle>SSAP Scheduler</ApplicationTitle>
-
-		<!-- App Icon -->
-		<ApplicationIcon>Platforms/Windows/app.ico</ApplicationIcon>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -25,18 +22,14 @@
 		<!-- Splash Screen -->
 		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
 
-		<!-- Images -->
-		<MauiImage Include="Resources\Images\*" />
+		<!-- Custom Fonts - optional, will be ignored if directory doesn't exist -->
+		<MauiFont Include="Resources\Fonts\*" Condition="Exists('Resources\Fonts')" />
 
-		<!-- Custom Fonts -->
-		<MauiFont Include="Resources\Fonts\*" />
+		<!-- Images - optional, will be ignored if directory doesn't exist -->  
+		<MauiImage Include="Resources\Images\*" Condition="Exists('Resources\Images')" />
 
-		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
-		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Include="MyMauiApp.csproj" />
+		<!-- Raw Assets - optional, will be ignored if directory doesn't exist -->
+		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" Condition="Exists('Resources\Raw')" />
 	</ItemGroup>
 
 	<ItemGroup>
