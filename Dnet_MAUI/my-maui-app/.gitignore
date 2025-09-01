@@ -41,3 +41,50 @@ packages/
 
 # Visual Studio Code
 .vscode/
+
+# Windows system files and directories
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+System Volume Information/
+
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# IDE files
+.idea/
+*.swp
+*.swo
+
+# Runtime and deployment directories that should not be tracked
+wwwroot/
+publish/
+dist/
+out/
+
+# Windows App SDK and MSIX related (prevent accidental inclusion)
+*.msix
+*.appx
+Package.appxmanifest
+AppxManifest.xml
+
+# Additional safety exclusions for preventing directory copying issues
+node_modules/
+bower_components/
+*.tmp
+temp/
+tmp/
+
+# Exclude any potential system root directories that might get included accidentally
+/C/
+/D/
+/E/
+/F/

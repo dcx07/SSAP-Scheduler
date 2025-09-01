@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Razor">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFrameworks>net8.0-windows10.0.19041.0</TargetFrameworks>
@@ -10,24 +10,80 @@
 		<SingleProject>true</SingleProject>
 		<ImplicitUsings>enable</ImplicitUsings>
 
-		<ApplicationTitle>MyMauiApp</ApplicationTitle>
-		<ApplicationId>com.companyname.mymauiapp</ApplicationId>
+		<ApplicationTitle>SSAP Scheduler</ApplicationTitle>
+		<ApplicationId>com.dcx07.ssapscheduler</ApplicationId>
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
 		<ApplicationVersion>1</ApplicationVersion>
 
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<Platforms>AnyCPU;x86;x64</Platforms>
+		
+		<!-- Windows App SDK Configuration -->
 		<WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+		<UseWinUI>true</UseWinUI>
+		<WindowsPackageType>None</WindowsPackageType>
+		<UseAppHost>true</UseAppHost>
+		
+		<!-- Disable MSIX packaging to prevent manifest issues -->
+		<GenerateAppxPackageOnBuild>false</GenerateAppxPackageOnBuild>
+		<AppxPackageSigningEnabled>false</AppxPackageSigningEnabled>
+		<GenerateAppInstallerFile>false</GenerateAppInstallerFile>
+		<EnableMsixTooling>false</EnableMsixTooling>
+		
+		<!-- Content and asset handling - prevent excessive copying -->
+		<EnableDefaultItems>true</EnableDefaultItems>
+		<EnableDefaultMauiItems>true</EnableDefaultMauiItems>
+		<EnableDefaultContentItems>false</EnableDefaultContentItems>
+		<EnableDefaultNoneItems>false</EnableDefaultNoneItems>
 	</PropertyGroup>
 
 	<ItemGroup>
+		<!-- MAUI Resources - Explicitly define to prevent excessive copying -->
 		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
 		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
-		<MauiImage Include="Resources\Images\*" />
+		
+		<!-- Explicitly include only specific image files -->
+		<MauiImage Include="Resources\Images\*.png" />
+		<MauiImage Include="Resources\Images\*.jpg" />
+		<MauiImage Include="Resources\Images\*.svg" />
 		<MauiImage Update="Resources\Images\dotnet_bot.svg" BaseSize="168,208" />
-		<MauiFont Include="Resources\Fonts\*" />
-		<!-- <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" /> -->
+		
+		<!-- Explicitly include only font files -->
+		<MauiFont Include="Resources\Fonts\*.ttf" />
+		<MauiFont Include="Resources\Fonts\*.otf" />
+		
+		<!-- Only include specific raw assets if they exist -->
+		<MauiAsset Include="Resources\Raw\*.json" Condition="Exists('Resources\Raw')" />
+		<MauiAsset Include="Resources\Raw\*.txt" Condition="Exists('Resources\Raw')" />
+	</ItemGroup>
+	
+	<!-- Explicitly exclude patterns that might cause excessive copying -->
+	<ItemGroup>
+		<Compile Remove="bin\**" />
+		<Compile Remove="obj\**" />
+		<EmbeddedResource Remove="bin\**" />
+		<EmbeddedResource Remove="obj\**" />
+		<MauiCss Remove="bin\**" />
+		<MauiCss Remove="obj\**" />
+		<None Remove="bin\**" />
+		<None Remove="obj\**" />
+		<Content Remove="bin\**" />
+		<Content Remove="obj\**" />
+		
+		<!-- Exclude system and temp directories that might be inadvertently included -->
+		<None Remove="**\System Volume Information\**" />
+		<None Remove="**\$Recycle.Bin\**" />
+		<None Remove="**\.git\**" />
+		<None Remove="**\.vs\**" />
+		<None Remove="**\node_modules\**" />
+		<None Remove="**\packages\**" />
+		<Content Remove="**\System Volume Information\**" />
+		<Content Remove="**\$Recycle.Bin\**" />
+		<Content Remove="**\.git\**" />
+		<Content Remove="**\.vs\**" />
+		<Content Remove="**\node_modules\**" />
+		<Content Remove="**\packages\**" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -35,6 +91,10 @@
 		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.91" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.91" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
+		
+		<!-- Windows App SDK reference to resolve DLL not found issues -->
+		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.6.241114003" />
+		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1" />
 	</ItemGroup>
 
 </Project>
