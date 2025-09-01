@@ -1,38 +1,43 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
+		<TargetFrameworks>net8.0-windows10.0.19041.0</TargetFrameworks>
 		<OutputType>WinExe</OutputType>
-		<MauiSingleProject>true</MauiSingleProject>
+		<RootNamespace>MyMauiApp</RootNamespace>
 		<UseMaui>true</UseMaui>
-		<!-- Windows-only target framework configuration -->
-		<TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+		<SingleProject>true</SingleProject>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+
+		<!-- Display Info -->
+		<ApplicationTitle>SSAP Scheduler</ApplicationTitle>
+		<ApplicationId>com.ssap.scheduler</ApplicationId>
+		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+		<ApplicationVersion>1</ApplicationVersion>
+
+		<!-- Platform Configuration -->
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
-		<WindowsSdkPackageVersion>10.0.19041.38</WindowsSdkPackageVersion>
-		<EnableWindowsTargeting>true</EnableWindowsTargeting>
-		<RootNamespace>SSAP_Scheduler</RootNamespace>
-		<UseMauiEssentials>true</UseMauiEssentials>
-		<LaunchSettingsFilePath>$(MSBuildProjectDirectory)\Properties\launchSettings.json</LaunchSettingsFilePath>
-		
-		<!-- Disable MSIX packaging completely -->
+		<PlatformTarget>x64</PlatformTarget>
+
+		<!-- 彻底禁用 MSIX 和 Windows App SDK 自包含模式 -->
 		<WindowsPackageType>None</WindowsPackageType>
+		<UseWinUI>true</UseWinUI>
+		<WindowsAppSDKSelfContained>false</WindowsAppSDKSelfContained>
 		<UseAppHost>true</UseAppHost>
-		<WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
-		<PublishSingleFile>false</PublishSingleFile>
+		
+		<!-- 禁用 MSIX 相关功能 -->
 		<GenerateAppInstallerFile>false</GenerateAppInstallerFile>
 		<AppxPackageSigningEnabled>false</AppxPackageSigningEnabled>
 		<GenerateAppxPackageOnBuild>false</GenerateAppxPackageOnBuild>
-		
-		<!-- Additional properties to avoid MSIX-related tasks -->
 		<EnableMsixTooling>false</EnableMsixTooling>
 		<UapAppxPackageBuildMode>SideloadOnly</UapAppxPackageBuildMode>
 		<AppxBundle>Never</AppxBundle>
-		
-		<!-- Runtime configuration -->
-		<RuntimeIdentifiers>win-x64;win-x86;win-arm64</RuntimeIdentifiers>
-		<DefaultLanguage>en-US</DefaultLanguage>
-		
-		<!-- Display Info -->
-		<ApplicationTitle>SSAP Scheduler</ApplicationTitle>
+		<GenerateManifest>false</GenerateManifest>
+		<EmbedManifest>false</EmbedManifest>
+
+		<!-- 明确指定运行时标识符 -->
+		<RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -42,19 +47,19 @@
 		<!-- Splash Screen -->
 		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
 
-		<!-- Custom Fonts - optional, will be ignored if directory doesn't exist -->
-		<MauiFont Include="Resources\Fonts\*" Condition="Exists('Resources\Fonts')" />
+		<!-- Images -->
+		<MauiImage Include="Resources\Images\*" />
 
-		<!-- Images - optional, will be ignored if directory doesn't exist -->  
-		<MauiImage Include="Resources\Images\*" Condition="Exists('Resources\Images')" />
+		<!-- Custom Fonts -->
+		<MauiFont Include="Resources\Fonts\*" />
 
-		<!-- Raw Assets - optional, will be ignored if directory doesn't exist -->
-		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" Condition="Exists('Resources\Raw')" />
+		<!-- Raw Assets -->
+		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
+		<!-- 明确指定 Windows App SDK 版本 -->
+		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.5.240802000" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.7" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.7" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />

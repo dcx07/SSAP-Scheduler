@@ -1,49 +1,58 @@
-<Content of /my-maui-app/my-maui-app/Views/LoginPage.xaml>
-
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MyMauiApp.Views.LoginPage"
              BackgroundColor="{StaticResource LoginBackground}">
 
-    <ContentPage.Content>
-        <StackLayout Padding="24" VerticalOptions="Center">
-            <Label Text="SSAP 课程表"
-                   FontSize="28"
-                   FontAttributes="Bold"
-                   TextColor="{StaticResource Primary}"
-                   HorizontalOptions="Center"
-                   Margin="0,0,0,40" />
+    <Grid Padding="24" VerticalOptions="Center">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
 
-            <Entry Text="{Binding Username}"
-                   Placeholder="用户名"
-                   TextColor="{StaticResource TextColor}"
-                   PlaceholderColor="{StaticResource AccentColor}"
-                   FontSize="18"
-                   Margin="0,0,0,16" />
+        <Label Grid.Row="0"
+               Text="SSAP 课程表"
+               FontSize="28"
+               FontAttributes="Bold"
+               TextColor="{StaticResource Primary}"
+               HorizontalOptions="Center"
+               Margin="0,0,0,40" />
 
-            <Entry Text="{Binding Password}"
-                   Placeholder="密码"
-                   IsPassword="True"
-                   TextColor="{StaticResource TextColor}"
-                   PlaceholderColor="{StaticResource AccentColor}"
-                   FontSize="18"
-                   Margin="0,0,0,32" />
+        <Entry Grid.Row="1"
+               Text="{Binding Username}"
+               Placeholder="用户名"
+               TextColor="{StaticResource TextColor}"
+               PlaceholderColor="{StaticResource AccentColor}"
+               FontSize="18"
+               Margin="0,0,0,16" />
 
-            <Button Text="登录"
-                    Command="{Binding LoginCommand}"
-                    BackgroundColor="{StaticResource PrimaryButton}"
-                    TextColor="White"
-                    FontSize="20"
-                    HeightRequest="48"
-                    CornerRadius="12"
-                    IsEnabled="{Binding IsLoading, Converter={StaticResource InvertedBoolConverter}}" />
+        <Entry Grid.Row="2"
+               Text="{Binding Password}"
+               Placeholder="密码"
+               IsPassword="True"
+               TextColor="{StaticResource TextColor}"
+               PlaceholderColor="{StaticResource AccentColor}"
+               FontSize="18"
+               Margin="0,0,0,32" />
 
-            <ActivityIndicator IsVisible="{Binding IsLoading}"
-                               IsRunning="{Binding IsLoading}"
-                               Color="{StaticResource Primary}"
-                               HorizontalOptions="Center"
-                               Margin="0,16,0,0" />
-        </StackLayout>
-    </ContentPage.Content>
+        <Button Grid.Row="3"
+                Text="登录"
+                Command="{Binding LoginCommand}"
+                BackgroundColor="{StaticResource PrimaryButton}"
+                TextColor="White"
+                FontSize="20"
+                HeightRequest="48"
+                CornerRadius="12"
+                IsEnabled="{Binding IsLoading, Converter={StaticResource InvertedBoolConverter}}" />
+
+        <ActivityIndicator Grid.Row="4"
+                           IsVisible="{Binding IsLoading}"
+                           IsRunning="{Binding IsLoading}"
+                           Color="{StaticResource Primary}"
+                           HorizontalOptions="Center"
+                           Margin="0,16,0,0" />
+    </Grid>
 </ContentPage>

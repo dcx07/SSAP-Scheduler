@@ -4,9 +4,19 @@
   <Target Name="_GenerateAppxManifest" />
   <Target Name="_GeneratePriConfigXml" />
   <Target Name="_GenerateProjectPriFile" />
+  <Target Name="ExtractMicrosoftWindowsAppSDKMsixFiles" />
+  <Target Name="CreateWinRTRegistration" />
+  <Target Name="GetNewAppManifestValues" />
   
   <!-- Skip MSIX packaging tasks -->
   <Target Name="_CreateAppxPackage" />
   <Target Name="CreateAppxPackage" />
   <Target Name="_GenerateAppxBundleFile" />
+  <Target Name="WindowsAppSDKSelfContainedVerifyConfiguration" />
+  
+  <!-- Disable manifest generation -->
+  <PropertyGroup>
+    <GenerateManifest>false</GenerateManifest>
+    <EmbedManifest>false</EmbedManifest>
+  </PropertyGroup>
 </Project>
