@@ -12,5 +12,19 @@
     <!-- Ensure proper Windows targeting -->
     <UseWinUI>true</UseWinUI>
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+    
+    <!-- Prevent excessive file copying and improve build performance -->
+    <EnableDefaultItems>true</EnableDefaultItems>
+    <EnableDefaultContentItems>false</EnableDefaultContentItems>
+    <EnableDefaultNoneItems>false</EnableDefaultNoneItems>
+    <EnableDefaultCompileItems>true</EnableDefaultCompileItems>
+    <EnableDefaultEmbeddedResourceItems>true</EnableDefaultEmbeddedResourceItems>
+    
+    <!-- Ensure proper content handling -->
+    <IncludeAllContentForSelfExtract>false</IncludeAllContentForSelfExtract>
+    <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
+    
+    <!-- Exclude common directories that shouldn't be included -->
+    <DefaultItemExcludes>$(DefaultItemExcludes);bin\**;obj\**;packages\**;node_modules\**;.git\**;.vs\**</DefaultItemExcludes>
   </PropertyGroup>
 </Project>
