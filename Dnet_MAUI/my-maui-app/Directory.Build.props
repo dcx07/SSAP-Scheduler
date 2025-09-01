@@ -1,0 +1,16 @@
+<Project>
+  <PropertyGroup>
+    <!-- Ensure MSIX packaging is disabled globally -->
+    <WindowsPackageType>None</WindowsPackageType>
+    <EnableMsixTooling>false</EnableMsixTooling>
+    <GenerateAppxPackageOnBuild>false</GenerateAppxPackageOnBuild>
+    <AppxPackageSigningEnabled>false</AppxPackageSigningEnabled>
+    <GenerateAppInstallerFile>false</GenerateAppInstallerFile>
+    <AppxBundle>Never</AppxBundle>
+    <UapAppxPackageBuildMode>SideloadOnly</UapAppxPackageBuildMode>
+    
+    <!-- Ensure proper Windows targeting -->
+    <UseWinUI>true</UseWinUI>
+    <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+  </PropertyGroup>
+</Project>
