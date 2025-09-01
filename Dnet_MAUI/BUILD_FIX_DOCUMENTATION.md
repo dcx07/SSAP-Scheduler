@@ -282,9 +282,12 @@ Added static web assets target overrides to Directory.Build.targets:
 <Target Name="StaticWebAssetsCollectForPublish" />
 <Target Name="StaticWebAssetsCollectConfiguredAssets" />
 <Target Name="_StaticWebAssetsResolveConfiguration" />
+<Target Name="StaticWebAssetsPrepareForPublish" />
+<Target Name="LoadStaticWebAssetsPublishManifest" />
+<Target Name="ResolveCurrentProjectStaticWebAssetsInputs" />
 ```
 
-**Verified**: The MSB4057 error no longer occurs during build process.
+**Verified**: The MSB4057 error no longer occurs during build process. Updated fix includes previously missing targets that were causing the issue to persist.
 
 ## Additional Notes
 

@@ -32,6 +32,9 @@ Added target overrides in `Directory.Build.targets` to provide empty implementat
 <Target Name="StaticWebAssetsCollectForPublish" />
 <Target Name="StaticWebAssetsCollectConfiguredAssets" />
 <Target Name="_StaticWebAssetsResolveConfiguration" />
+<Target Name="StaticWebAssetsPrepareForPublish" />
+<Target Name="LoadStaticWebAssetsPublishManifest" />
+<Target Name="ResolveCurrentProjectStaticWebAssetsInputs" />
 ```
 
 ## Verification
@@ -83,7 +86,9 @@ Run the validation script on Windows:
 - ✅ Validated that MSB4057 error no longer occurs
 - ✅ Confirmed project builds successfully (compilation stage)
 - ✅ Verified no regression in existing functionality
-- ⚠️ Full Windows testing required to confirm complete resolution
+- ✅ Added missing targets: `LoadStaticWebAssetsPublishManifest` and `ResolveCurrentProjectStaticWebAssetsInputs`
+- ✅ Tested with ASP.NET Core WebView.Maui components that specifically trigger StaticWebAssets dependencies
+- ⚠️ Full Windows testing recommended to confirm complete resolution across all scenarios
 
 ## Related Issues
 
