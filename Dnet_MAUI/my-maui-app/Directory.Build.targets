@@ -1,0 +1,12 @@
+<Project>
+  <!-- Override targets that might try to generate MSIX content -->
+  <Target Name="GenerateAppManifestFromAppx" />
+  <Target Name="_GenerateAppxManifest" />
+  <Target Name="_GeneratePriConfigXml" />
+  <Target Name="_GenerateProjectPriFile" />
+  
+  <!-- Skip MSIX packaging tasks -->
+  <Target Name="_CreateAppxPackage" />
+  <Target Name="CreateAppxPackage" />
+  <Target Name="_GenerateAppxBundleFile" />
+</Project>

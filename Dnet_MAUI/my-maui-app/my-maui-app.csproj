@@ -6,11 +6,31 @@
 		<UseMaui>true</UseMaui>
 		<!-- Windows-only target framework configuration -->
 		<TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+		<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+		<WindowsSdkPackageVersion>10.0.19041.38</WindowsSdkPackageVersion>
 		<EnableWindowsTargeting>true</EnableWindowsTargeting>
 		<RootNamespace>SSAP_Scheduler</RootNamespace>
 		<UseMauiEssentials>true</UseMauiEssentials>
 		<LaunchSettingsFilePath>$(MSBuildProjectDirectory)\Properties\launchSettings.json</LaunchSettingsFilePath>
+		
+		<!-- Disable MSIX packaging completely -->
 		<WindowsPackageType>None</WindowsPackageType>
+		<UseAppHost>true</UseAppHost>
+		<WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+		<PublishSingleFile>false</PublishSingleFile>
+		<GenerateAppInstallerFile>false</GenerateAppInstallerFile>
+		<AppxPackageSigningEnabled>false</AppxPackageSigningEnabled>
+		<GenerateAppxPackageOnBuild>false</GenerateAppxPackageOnBuild>
+		
+		<!-- Additional properties to avoid MSIX-related tasks -->
+		<EnableMsixTooling>false</EnableMsixTooling>
+		<UapAppxPackageBuildMode>SideloadOnly</UapAppxPackageBuildMode>
+		<AppxBundle>Never</AppxBundle>
+		
+		<!-- Runtime configuration -->
+		<RuntimeIdentifiers>win-x64;win-x86;win-arm64</RuntimeIdentifiers>
+		<DefaultLanguage>en-US</DefaultLanguage>
+		
 		<!-- Display Info -->
 		<ApplicationTitle>SSAP Scheduler</ApplicationTitle>
 	</PropertyGroup>
