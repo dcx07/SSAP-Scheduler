@@ -257,6 +257,35 @@ The script will:
 3. Test build process and identify any remaining issues
 4. Provide specific feedback on whether the directory copying and DLL issues are resolved
 
+## Additional Fixes Applied
+
+### StaticWebAssetsPrepareForRun MSB4057 Error Fix (2025-09-01)
+
+**Problem**: 
+- MSB4057 error: "StaticWebAssetsPrepareForRun" target doesn't exist
+- Error occurs in Microsoft.AspNetCore.Components.WebView.Maui.targets, line 27
+- Caused by missing ASP.NET Core Static Web Assets infrastructure
+
+**Root Cause**:
+- MAUI projects may include ASP.NET Core WebView components as transitive dependencies
+- Microsoft.WindowsAppSDK package brings in Microsoft.Web.WebView2 dependency
+- WebView components expect Static Web Assets targets that aren't available in Microsoft.NET.Sdk
+
+**Solution Applied**:
+Added static web assets target overrides to Directory.Build.targets:
+```xml
+<!-- Override ASP.NET Core Static Web Assets targets to prevent MSB4057 errors -->
+<Target Name="StaticWebAssetsPrepareForRun" />
+<Target Name="StaticWebAssetsCollectPublishAssets" />
+<Target Name="StaticWebAssetsGenerateManifest" />
+<Target Name="_StaticWebAssetsPrepareForPublish" />
+<Target Name="StaticWebAssetsCollectForPublish" />
+<Target Name="StaticWebAssetsCollectConfiguredAssets" />
+<Target Name="_StaticWebAssetsResolveConfiguration" />
+```
+
+**Verified**: The MSB4057 error no longer occurs during build process.
+
 ## Additional Notes
 
 - **Unpackaged Application**: This configuration creates an unpackaged MAUI application suitable for desktop deployment
