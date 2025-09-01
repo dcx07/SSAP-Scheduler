@@ -8,6 +8,15 @@
   <Target Name="CreateWinRTRegistration" />
   <Target Name="GetNewAppManifestValues" />
   
+  <!-- Override ASP.NET Core Static Web Assets targets to prevent MSB4057 errors -->
+  <Target Name="StaticWebAssetsPrepareForRun" />
+  <Target Name="StaticWebAssetsCollectPublishAssets" />
+  <Target Name="StaticWebAssetsGenerateManifest" />
+  <Target Name="_StaticWebAssetsPrepareForPublish" />
+  <Target Name="StaticWebAssetsCollectForPublish" />
+  <Target Name="StaticWebAssetsCollectConfiguredAssets" />
+  <Target Name="_StaticWebAssetsResolveConfiguration" />
+  
   <!-- Skip MSIX packaging tasks -->
   <Target Name="_CreateAppxPackage" />
   <Target Name="CreateAppxPackage" />
