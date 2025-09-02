@@ -5,6 +5,16 @@
 		<RuntimeIdentifiers>win-x64;win-x86;win-arm64</RuntimeIdentifiers>
 		<EnableWindowsTargeting>true</EnableWindowsTargeting>
 		
+		<!-- Conditional platform detection for better SDK compatibility -->
+		<IsWindows Condition="$([MSBuild]::IsOsPlatform('Windows'))">true</IsWindows>
+		<IsWindows Condition="!$([MSBuild]::IsOsPlatform('Windows'))">false</IsWindows>
+		
+		<!-- Conditional runtime identifier based on platform -->
+		<RuntimeIdentifier Condition="'$(IsWindows)' == 'true' AND '$(Platform)' == 'x64'">win-x64</RuntimeIdentifier>
+		<RuntimeIdentifier Condition="'$(IsWindows)' == 'true' AND '$(Platform)' == 'x86'">win-x86</RuntimeIdentifier>
+		<RuntimeIdentifier Condition="'$(IsWindows)' == 'true' AND '$(Platform)' == 'AnyCPU'">win-x64</RuntimeIdentifier>
+		<RuntimeIdentifier Condition="'$(IsWindows)' == 'false'">linux-x64</RuntimeIdentifier>
+		
 		<OutputType>Exe</OutputType>
 		<RootNamespace>MyMauiApp</RootNamespace>
 		<UseMaui>true</UseMaui>
@@ -20,9 +30,11 @@
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<Platforms>AnyCPU;x86;x64</Platforms>
 		
-		<!-- Windows App SDK Configuration -->
-		<WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
-		<UseWinUI>true</UseWinUI>
+		<!-- Windows App SDK Configuration - Only on Windows -->
+		<WindowsAppSDKSelfContained Condition="'$(IsWindows)' == 'true'">true</WindowsAppSDKSelfContained>
+		<WindowsAppSDKSelfContained Condition="'$(IsWindows)' == 'false'">false</WindowsAppSDKSelfContained>
+		<UseWinUI Condition="'$(IsWindows)' == 'true'">true</UseWinUI>
+		<UseWinUI Condition="'$(IsWindows)' == 'false'">false</UseWinUI>
 		<WindowsPackageType>None</WindowsPackageType>
 		<UseAppHost>true</UseAppHost>
 		
@@ -33,13 +45,16 @@
 		<EnableMsixTooling>false</EnableMsixTooling>
 		<SelfContained>true</SelfContained>
 
-
 		<!-- Content and asset handling - prevent excessive copying -->
 		<EnableDefaultItems>true</EnableDefaultItems>
 		<EnableDefaultMauiItems>true</EnableDefaultMauiItems>
 		<EnableDefaultContentItems>false</EnableDefaultContentItems>
 		<EnableDefaultNoneItems>false</EnableDefaultNoneItems>
 		<PlatformTarget>x64</PlatformTarget>
+		
+		<!-- SDK Detection improvement -->
+		<DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
+		<MSBuildWarningsAsMessages>$(MSBuildWarningsAsMessages);NU1608</MSBuildWarningsAsMessages>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -96,9 +111,9 @@
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.91" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
 		
-		<!-- Windows App SDK reference to resolve DLL not found issues -->
-		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.6.241114003" />
-		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1" />
+		<!-- Windows App SDK reference - Only on Windows to resolve DLL not found issues -->
+		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.6.241114003" Condition="'$(IsWindows)' == 'true'" />
+		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1" Condition="'$(IsWindows)' == 'true'" />
 	</ItemGroup>
 
 </Project>

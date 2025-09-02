@@ -1,5 +1,16 @@
 <Project>
   <PropertyGroup>
+    <!-- SDK Detection and Version Configuration -->
+    <MSBuildSDKsPath Condition="'$(MSBuildSDKsPath)' == ''">$(MSBuildProgramFiles32)\dotnet\sdk\$(MSBuildVersion)\Sdks</MSBuildSDKsPath>
+    <DotNetCliToolsPath Condition="'$(DotNetCliToolsPath)' == ''">$(MSBuildProgramFiles32)\dotnet</DotNetCliToolsPath>
+    <RequiredNetCore>8.0</RequiredNetCore>
+    <TargetFrameworkVersion>v8.0</TargetFrameworkVersion>
+    
+    <!-- Improve SDK detection and avoid "install SDK" prompts -->
+    <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <RestoreLockedMode Condition="$(ContinuousIntegrationBuild) == 'true'">true</RestoreLockedMode>
+    
     <!-- Ensure MSIX packaging is disabled globally -->
     <WindowsPackageType>None</WindowsPackageType>
     <EnableMsixTooling>false</EnableMsixTooling>
@@ -9,9 +20,11 @@
     <AppxBundle>Never</AppxBundle>
     <UapAppxPackageBuildMode>SideloadOnly</UapAppxPackageBuildMode>
     
-    <!-- Ensure proper Windows targeting -->
-    <UseWinUI>true</UseWinUI>
-    <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+    <!-- Conditional Windows targeting - only enable on Windows -->
+    <UseWinUI Condition="$([MSBuild]::IsOsPlatform('Windows'))">true</UseWinUI>
+    <UseWinUI Condition="!$([MSBuild]::IsOsPlatform('Windows'))">false</UseWinUI>
+    <WindowsAppSDKSelfContained Condition="$([MSBuild]::IsOsPlatform('Windows'))">true</WindowsAppSDKSelfContained>
+    <WindowsAppSDKSelfContained Condition="!$([MSBuild]::IsOsPlatform('Windows'))">false</WindowsAppSDKSelfContained>
     
     <!-- Prevent excessive file copying and improve build performance -->
     <EnableDefaultItems>true</EnableDefaultItems>
@@ -26,5 +39,8 @@
     
     <!-- Exclude common directories that shouldn't be included -->
     <DefaultItemExcludes>$(DefaultItemExcludes);bin\**;obj\**;packages\**;node_modules\**;.git\**;.vs\**</DefaultItemExcludes>
+    
+    <!-- Error handling for missing SDKs -->
+    <MSBuildWarningsAsMessages>$(MSBuildWarningsAsMessages);MSB3270</MSBuildWarningsAsMessages>
   </PropertyGroup>
 </Project>
