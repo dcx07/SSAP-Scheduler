@@ -4,8 +4,8 @@
   <Target Name="_GenerateAppxManifest" />
   <Target Name="_GeneratePriConfigXml" />
   <Target Name="_GenerateProjectPriFile" />
-  <Target Name="ExtractMicrosoftWindowsAppSDKMsixFiles" />
-  <Target Name="CreateWinRTRegistration" />
+  <Target Name="ExtractMicrosoftWindowsAppSDKMsixFiles" Condition="'$(IsWindows)' == 'true'" />
+  <Target Name="CreateWinRTRegistration" Condition="'$(IsWindows)' == 'true'" />
   <Target Name="GetNewAppManifestValues" />
   
   <!-- Override ASP.NET Core Static Web Assets targets to prevent MSB4057 errors -->
@@ -24,7 +24,21 @@
   <Target Name="_CreateAppxPackage" />
   <Target Name="CreateAppxPackage" />
   <Target Name="_GenerateAppxBundleFile" />
-  <Target Name="WindowsAppSDKSelfContainedVerifyConfiguration" />
+  <Target Name="WindowsAppSDKSelfContainedVerifyConfiguration" Condition="'$(IsWindows)' == 'true'" />
+  
+  <!-- Override Windows-specific XAML compilation on non-Windows platforms -->
+  <Target Name="MarkupCompilePass1" Condition="'$(IsWindows)' == 'false'" />
+  <Target Name="MarkupCompilePass2" Condition="'$(IsWindows)' == 'false'" />
+  <Target Name="XamlPreCompile" Condition="'$(IsWindows)' == 'false'" />
+  
+  <!-- Add error handling for SDK detection issues -->
+  <Target Name="ValidateSDKDetection" BeforeTargets="Build">
+    <Message Text="Building on platform: $(OS)" Importance="high" />
+    <Message Text="Is Windows: $(IsWindows)" Importance="high" />
+    <Message Text="MSBuild SDK Path: $(MSBuildSDKsPath)" Importance="high" />
+    <Message Text="DotNet CLI Tools Path: $(DotNetCliToolsPath)" Importance="high" />
+    <Warning Text="Building MAUI project on non-Windows platform. Some Windows-specific features will be disabled." Condition="'$(IsWindows)' == 'false'" />
+  </Target>
   
   <!-- Override targets that might cause excessive file copying -->
   <Target Name="_CopyFilesToOutputDirectory" DependsOnTargets="_PrepareForBuild">

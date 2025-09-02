@@ -6,6 +6,8 @@
 /msedgedriver.zip
 /schedule_grouped.json
 *.json
+!global.json
+!NuGet.config
 /msedgedriver.exe
 /msedgedriver.exe
 /msedgedriver.exe

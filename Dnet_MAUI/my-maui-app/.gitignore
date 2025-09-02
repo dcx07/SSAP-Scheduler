@@ -38,6 +38,7 @@ bld/
 packages/
 *.nupkg
 *.snupkg
+packages.lock.json
 
 # Visual Studio Code
 .vscode/
