@@ -16,6 +16,9 @@
   <Target Name="StaticWebAssetsCollectForPublish" />
   <Target Name="StaticWebAssetsCollectConfiguredAssets" />
   <Target Name="_StaticWebAssetsResolveConfiguration" />
+  <Target Name="StaticWebAssetsPrepareForPublish" />
+  <Target Name="LoadStaticWebAssetsPublishManifest" />
+  <Target Name="ResolveCurrentProjectStaticWebAssetsInputs" />
   
   <!-- Skip MSIX packaging tasks -->
   <Target Name="_CreateAppxPackage" />
