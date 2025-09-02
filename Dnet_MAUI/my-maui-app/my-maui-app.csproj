@@ -31,12 +31,15 @@
 		<AppxPackageSigningEnabled>false</AppxPackageSigningEnabled>
 		<GenerateAppInstallerFile>false</GenerateAppInstallerFile>
 		<EnableMsixTooling>false</EnableMsixTooling>
-		
+		<SelfContained>true</SelfContained>
+
+
 		<!-- Content and asset handling - prevent excessive copying -->
 		<EnableDefaultItems>true</EnableDefaultItems>
 		<EnableDefaultMauiItems>true</EnableDefaultMauiItems>
 		<EnableDefaultContentItems>false</EnableDefaultContentItems>
 		<EnableDefaultNoneItems>false</EnableDefaultNoneItems>
+		<PlatformTarget>x64</PlatformTarget>
 	</PropertyGroup>
 
 	<ItemGroup>
