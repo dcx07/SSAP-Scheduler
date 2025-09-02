@@ -150,7 +150,7 @@ public class ScheduleService : IScheduleService
             process.BeginErrorReadLine();
 
             // Wait for process to complete with timeout
-            var completed = await process.WaitForExitAsync();
+            await process.WaitForExitAsync();
             
             if (process.ExitCode == 0)
             {
