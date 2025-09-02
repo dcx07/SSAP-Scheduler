@@ -16,7 +16,7 @@ public class App : MauiWinUIApplication
     /// </summary>
     public App()
     {
-        // No InitializeComponent() needed since we don't have App.xaml
+        this.InitializeComponent();
     }
 
     protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
