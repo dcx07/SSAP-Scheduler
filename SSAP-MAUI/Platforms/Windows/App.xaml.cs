@@ -8,7 +8,7 @@ namespace SSAP_MAUI.WinUI;
 /// <summary>
 /// Provides application-specific behavior to supplement the default Application class.
 /// </summary>
-public class App : MauiWinUIApplication
+public partial class App : MauiWinUIApplication
 {
     /// <summary>
     /// Initializes the singleton application object.  This is the first line of authored code
@@ -16,7 +16,7 @@ public class App : MauiWinUIApplication
     /// </summary>
     public App()
     {
-        // No InitializeComponent() needed since we don't have App.xaml
+        this.InitializeComponent();
     }
 
     protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
