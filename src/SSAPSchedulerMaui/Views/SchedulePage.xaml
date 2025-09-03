@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SSAPSchedulerMaui.Views.SchedulePage"
+             Title="今日课程">
+    
+    <!-- Main Container -->
+    <Grid BackgroundColor="#FDF5E6">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="90" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        
+        <!-- Header with purple background -->
+        <Border Grid.Row="0" 
+                BackgroundColor="#6C63FF"
+                StrokeShape="RoundRectangle 0,0,24,24"
+                VerticalOptions="Fill">
+            <Grid>
+                <Label Text="今日课程"
+                       TextColor="White"
+                       FontSize="28"
+                       FontAttributes="Bold"
+                       FontFamily="NotoSansSC"
+                       HorizontalOptions="Start"
+                       VerticalOptions="End"
+                       Margin="32,0,0,18" />
+                
+                <Button x:Name="RefreshButton"
+                        Text="刷新"
+                        BackgroundColor="Transparent"
+                        TextColor="White"
+                        FontSize="16"
+                        FontFamily="NotoSansSC"
+                        HorizontalOptions="End"
+                        VerticalOptions="Center"
+                        Margin="0,0,32,0"
+                        Clicked="OnRefreshClicked" />
+            </Grid>
+        </Border>
+        
+        <!-- Content Area -->
+        <Grid Grid.Row="1">
+            <!-- Loading Indicator -->
+            <ActivityIndicator x:Name="LoadingIndicator"
+                             IsVisible="True"
+                             IsRunning="True"
+                             Color="#6C63FF"
+                             VerticalOptions="Center"
+                             HorizontalOptions="Center"
+                             HeightRequest="50" />
+            
+            <!-- Courses List -->
+            <CollectionView x:Name="CoursesCollectionView"
+                          IsVisible="False"
+                          ItemsSource="{Binding Courses}"
+                          BackgroundColor="Transparent">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="16,8">
+                            <Border BackgroundColor="White"
+                                  StrokeThickness="0"
+                                  StrokeShape="RoundRectangle 12"
+                                  Shadow="{StaticResource CommonShadow}">
+                                <Grid Padding="16" ColumnDefinitions="60,*">
+                                    <!-- Emoji -->
+                                    <Label Grid.Column="0"
+                                         Text="{Binding Emoji}"
+                                         FontSize="24"
+                                         FontFamily="NotoSansSC"
+                                         HorizontalOptions="Center"
+                                         VerticalOptions="Center" />
+                                    
+                                    <!-- Course Details -->
+                                    <VerticalStackLayout Grid.Column="1" Spacing="4">
+                                        <Label Text="{Binding Name}"
+                                             FontSize="16"
+                                             FontAttributes="Bold"
+                                             FontFamily="NotoSansSC"
+                                             TextColor="#4A5568" />
+                                        
+                                        <Label FontFamily="NotoSansSC"
+                                             FontSize="14"
+                                             TextColor="#718096">
+                                            <Label.FormattedText>
+                                                <FormattedString>
+                                                    <Span Text="⏰ " />
+                                                    <Span Text="{Binding Start}" />
+                                                    <Span Text=" - " />
+                                                    <Span Text="{Binding End}" />
+                                                </FormattedString>
+                                            </Label.FormattedText>
+                                        </Label>
+                                        
+                                        <Label FontFamily="NotoSansSC"
+                                             FontSize="14"
+                                             TextColor="#718096">
+                                            <Label.FormattedText>
+                                                <FormattedString>
+                                                    <Span Text="📍 " />
+                                                    <Span Text="{Binding Location}" />
+                                                </FormattedString>
+                                            </Label.FormattedText>
+                                        </Label>
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            
+            <!-- Empty State -->
+            <VerticalStackLayout x:Name="EmptyStateLayout"
+                               IsVisible="False"
+                               VerticalOptions="Center"
+                               HorizontalOptions="Center"
+                               Spacing="16">
+                <Label Text="📅"
+                     FontSize="48"
+                     HorizontalOptions="Center" />
+                <Label Text="今天没有课程"
+                     FontSize="18"
+                     FontFamily="NotoSansSC"
+                     TextColor="#718096"
+                     HorizontalOptions="Center" />
+            </VerticalStackLayout>
+        </Grid>
+    </Grid>
+</ContentPage>
