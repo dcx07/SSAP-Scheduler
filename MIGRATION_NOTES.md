@@ -51,17 +51,23 @@ This document tracks the migration of the SSAP-Scheduler Flutter application to 
 - Chinese fonts included as embedded resources
 - Process execution limited to Windows executable
 
-### TODO/Stubs Created
-- [ ] Backend executable integration
-- [ ] Chinese localization setup
-- [ ] Course data parsing from JSON
-- [ ] Error handling and user feedback
-- [ ] Styling to match Flutter Material Design
-
 ### Known Limitations
 - Android/iOS support deferred to later phases
 - Backend integration assumes Windows executable
 - Font embedding may need platform-specific handling
+- **Build Environment**: XAML compilation requires Windows (fails on Linux CI)
+
+### TODO/Stubs Created
+- [x] Backend executable integration (with Windows detection)
+- [x] Chinese localization setup (fonts configured)
+- [x] Course data parsing from JSON (implemented)
+- [x] Error handling and user feedback (implemented)
+- [x] Styling to match Flutter Material Design (implemented)
+
+### Build Status
+- **Linux**: Fails at XAML compilation (expected - Windows-only XamlCompiler.exe)
+- **Windows**: Should build successfully (CI workflow configured)
+- **Target**: `dotnet build -c Debug -f net9.0-windows10.0.19041.0` on Windows
 
 ## How to Run
 1. Install .NET 9 SDK
@@ -79,10 +85,33 @@ This document tracks the migration of the SSAP-Scheduler Flutter application to 
 - Identified key components and dependencies
 - Created widget/service mapping tables
 
-### Step 2: Bootstrap MAUI Project 🔄
-- Installing .NET 9 SDK
-- Creating MAUI project structure
-- Setting up Windows targeting
+### Step 2: Bootstrap MAUI Project ✅
+- Installed .NET 9 SDK (9.0.100)
+- Installed MAUI Windows workload 
+- Created MAUI project targeting `net9.0-windows10.0.19041.0`
+- Configured Chinese fonts (NotoSansSC family)
+- Set up project structure with Views, Services, Models folders
 
-### Step 3-11: TBD
-Steps 3-11 will be documented as migration progresses.
+### Step 3: Port Assets/Styles ✅
+- Copied NotoSansSC font files to Resources/Fonts
+- Added font registration in MauiProgram.cs
+- Created custom shadow styles for course cards
+- Configured Material Design-like color scheme
+
+### Step 4: Routing & Entry Page ✅
+- Implemented LoginPage.xaml with Chinese UI
+- Created LoginPage.xaml.cs with credential handling
+- Updated AppShell for navigation routing
+- Configured dependency injection for services
+
+### Step 5: MVVM + DI Setup ✅
+- Created IBackendService interface
+- Implemented BackendService with file I/O and process execution
+- Registered services in MauiProgram
+- Set up navigation parameter passing
+
+### Step 6: Feature Implementation ✅
+- **Login Page**: Username/password fields, validation, loading states
+- **Schedule Page**: CollectionView for courses, refresh functionality, empty states
+- **Backend Integration**: Config.json writing, main.exe execution, schedule parsing
+- **Models**: Course, ScheduleData, LoginCredentials classes
