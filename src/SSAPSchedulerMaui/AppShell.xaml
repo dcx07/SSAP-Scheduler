@@ -8,14 +8,12 @@
 
     <!-- Login Page (Initial Page) -->
     <ShellContent
-        Name="LoginPage"
         Title="登录"
         Route="LoginPage"
         ContentTemplate="{DataTemplate local:LoginPage}" />
 
     <!-- Schedule Page -->
     <ShellContent
-        Name="SchedulePage" 
         Title="今日课程"
         Route="SchedulePage"
         ContentTemplate="{DataTemplate local:SchedulePage}" />
