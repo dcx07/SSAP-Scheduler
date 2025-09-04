@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SSAPSchedulerMaui.Views.LoginPage"
+             Title="登录">
+    
+    <!-- Main Container -->
+    <Grid BackgroundColor="#FDF5E6">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="90" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        
+        <!-- Header with purple background -->
+        <Border Grid.Row="0" 
+                BackgroundColor="#6C63FF"
+                StrokeShape="RoundRectangle 0,0,24,24"
+                VerticalOptions="Fill">
+            <Label Text="登录"
+                   TextColor="White"
+                   FontSize="28"
+                   FontAttributes="Bold"
+                   FontFamily="NotoSansSC"
+                   HorizontalOptions="Start"
+                   VerticalOptions="End"
+                   Margin="32,0,0,18" />
+        </Border>
+        
+        <!-- Login Form -->
+        <VerticalStackLayout Grid.Row="1"
+                           Padding="24"
+                           VerticalOptions="Center"
+                           Spacing="24">
+            
+            <!-- Username Entry -->
+            <Entry x:Name="UsernameEntry"
+                   Placeholder="用户名"
+                   FontSize="18"
+                   FontFamily="NotoSansSC"
+                   BackgroundColor="White"
+                   TextColor="Black"
+                   PlaceholderColor="#FFB870" />
+            
+            <!-- Password Entry -->
+            <Entry x:Name="PasswordEntry"
+                   Placeholder="密码"
+                   IsPassword="True"
+                   FontSize="18"
+                   FontFamily="NotoSansSC"
+                   BackgroundColor="White"
+                   TextColor="Black"
+                   PlaceholderColor="#FFB870" />
+            
+            <!-- Login Button -->
+            <Button x:Name="LoginButton"
+                    Text="登录"
+                    BackgroundColor="#8580F0"
+                    TextColor="White"
+                    FontSize="20"
+                    FontAttributes="Bold"
+                    FontFamily="NotoSansSC"
+                    HeightRequest="48"
+                    CornerRadius="12"
+                    Clicked="OnLoginClicked" />
+            
+            <!-- Loading Indicator -->
+            <ActivityIndicator x:Name="LoadingIndicator"
+                             IsVisible="False"
+                             IsRunning="False"
+                             Color="#6C63FF"
+                             HeightRequest="40" />
+            
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>

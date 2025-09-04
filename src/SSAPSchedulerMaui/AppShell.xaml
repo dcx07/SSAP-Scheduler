@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="SSAPSchedulerMaui.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:SSAPSchedulerMaui.Views"
+    Title="SSAP Scheduler">
+
+    <!-- Login Page (Initial Page) -->
+    <ShellContent
+        Name="LoginPage"
+        Title="登录"
+        Route="LoginPage"
+        ContentTemplate="{DataTemplate local:LoginPage}" />
+
+    <!-- Schedule Page -->
+    <ShellContent
+        Name="SchedulePage" 
+        Title="今日课程"
+        Route="SchedulePage"
+        ContentTemplate="{DataTemplate local:SchedulePage}" />
+
+</Shell>

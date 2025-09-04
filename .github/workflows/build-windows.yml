@@ -1,0 +1,35 @@
+name: Build-Windows
+on:
+  push:
+    branches: [ "maui-migration-win-net9" ]
+  pull_request:
+    branches: [ "maui-migration-win-net9" ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup .NET 9
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 9.0.x
+        
+    - name: Restore workloads
+      run: dotnet workload restore
+      working-directory: ./src/SSAPSchedulerMaui
+      
+    - name: Restore dependencies
+      run: dotnet restore
+      working-directory: ./src/SSAPSchedulerMaui
+      
+    - name: Build (Windows)
+      run: dotnet build -c Debug -f net9.0-windows10.0.19041.0 --no-restore
+      working-directory: ./src/SSAPSchedulerMaui
+      
+    - name: Test (if tests exist)
+      run: dotnet test -c Debug -f net9.0-windows10.0.19041.0 --no-build --verbosity normal
+      working-directory: ./src/SSAPSchedulerMaui
+      continue-on-error: true
