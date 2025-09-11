@@ -1,6 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using SSAPSchedulerMaui.Services;
 using SSAPSchedulerMaui.Views;
+using SSAPSchedulerMaui.ViewModels;
 
 namespace SSAPSchedulerMaui;
 
@@ -22,6 +23,16 @@ public static class MauiProgram
 
 		// Register services
 		builder.Services.AddSingleton<IBackendService, BackendService>();
+		
+		// Register platform-specific backend runner
+#if WINDOWS
+		builder.Services.AddSingleton<IBackendRunner, WindowsBackendRunner>();
+#else
+		builder.Services.AddSingleton<IBackendRunner, StubBackendRunner>();
+#endif
+		
+		// Register ViewModels
+		builder.Services.AddTransient<LoginPageViewModel>();
 		
 		// Register pages
 		builder.Services.AddTransient<LoginPage>();

@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:converters="clr-namespace:SSAPSchedulerMaui.Converters"
              x:Class="SSAPSchedulerMaui.Views.LoginPage"
              Title="登录">
+    
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+            <converters:StringNotEmptyConverter x:Key="StringNotEmptyConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
     
     <!-- Main Container -->
     <Grid BackgroundColor="#FDF5E6">
@@ -34,6 +42,7 @@
             
             <!-- Username Entry -->
             <Entry x:Name="UsernameEntry"
+                   Text="{Binding Username}"
                    Placeholder="用户名"
                    FontSize="18"
                    FontFamily="NotoSansSC"
@@ -43,6 +52,7 @@
             
             <!-- Password Entry -->
             <Entry x:Name="PasswordEntry"
+                   Text="{Binding Password}"
                    Placeholder="密码"
                    IsPassword="True"
                    FontSize="18"
@@ -61,14 +71,34 @@
                     FontFamily="NotoSansSC"
                     HeightRequest="48"
                     CornerRadius="12"
-                    Clicked="OnLoginClicked" />
+                    Command="{Binding LoginCommand}"
+                    IsEnabled="{Binding IsLoading, Converter={StaticResource InvertedBoolConverter}}" />
+            
+            <!-- Cancel Button (shown during loading) -->
+            <Button Text="取消"
+                    BackgroundColor="#FF6B6B"
+                    TextColor="White"
+                    FontSize="16"
+                    FontFamily="NotoSansSC"
+                    HeightRequest="40"
+                    CornerRadius="8"
+                    Command="{Binding CancelLoginCommand}"
+                    IsVisible="{Binding IsLoading}" />
             
             <!-- Loading Indicator -->
             <ActivityIndicator x:Name="LoadingIndicator"
-                             IsVisible="False"
-                             IsRunning="False"
+                             IsVisible="{Binding IsLoading}"
+                             IsRunning="{Binding IsLoading}"
                              Color="#6C63FF"
                              HeightRequest="40" />
+            
+            <!-- Status Message -->
+            <Label Text="{Binding StatusMessage}"
+                   FontSize="14"
+                   FontFamily="NotoSansSC"
+                   TextColor="#666"
+                   HorizontalOptions="Center"
+                   IsVisible="{Binding StatusMessage, Converter={StaticResource StringNotEmptyConverter}}" />
             
         </VerticalStackLayout>
     </Grid>
