@@ -115,3 +115,37 @@ This document tracks the migration of the SSAP-Scheduler Flutter application to 
 - **Schedule Page**: CollectionView for courses, refresh functionality, empty states
 - **Backend Integration**: Config.json writing, main.exe execution, schedule parsing
 - **Models**: Course, ScheduleData, LoginCredentials classes
+
+### Step 7: MVVM Refactor + Backend Flow ✅ (.NET 9 Target)
+- **MVVM Pattern**: Implemented `LoginPageViewModel` with CommunityToolkit.Mvvm
+- **Backend Abstraction**: Created `IBackendRunner` interface for cross-platform support
+- **Sequential Flow**: Proper 1→2→3 execution (write config → run main.exe → read schedule)
+- **Windows Implementation**: `WindowsBackendRunner` with proper process execution
+- **Cross-Platform**: `StubBackendRunner` for non-Windows platforms  
+- **Error Handling**: Password redaction, timeout handling, cancellation support
+- **Concurrency**: Guards against parallel runs, proper async/await patterns
+- **UI Binding**: Data binding with converters, progress indicators, status messages
+- **Path Resolution**: Using `AppContext.BaseDirectory` for Backend directory
+- **Build Assets**: Backend files copied to output directory via .csproj
+
+## Frontend Backend Integration
+
+### How Frontend Triggers Backend
+1. **User Action**: Login button triggers `LoginPageViewModel.LoginCommand` (IAsyncRelayCommand)
+2. **Sequential Flow**: 
+   - Write credentials to `/Backend/config.json` (UTF-8)
+   - Execute `/Backend/main.exe` with timeout and cancellation support
+   - Read and parse `/Backend/schedule_grouped.json`
+3. **UI Updates**: Progress indication, error handling, navigation on success
+
+### File Locations
+- **Backend Directory**: Resolved via `AppContext.BaseDirectory + "Backend"`
+- **Config File**: `/Backend/config.json` (credentials in JSON format)
+- **Executable**: `/Backend/main.exe` (Windows process execution)
+- **Schedule Data**: `/Backend/schedule_grouped.json` (parsed to Course objects)
+
+### Assumptions
+- Windows-first target with .NET 9 framework
+- Backend executable generates `schedule_grouped.json` after reading `config.json`
+- Non-Windows platforms use stub data for development
+- UI credential inputs remain unchanged (only backend flow modified)

@@ -6,6 +6,7 @@ namespace SSAPSchedulerMaui.Views;
 
 [QueryProperty(nameof(Username), "Username")]
 [QueryProperty(nameof(Password), "Password")]
+[QueryProperty(nameof(PreloadedCourses), "PreloadedCourses")]
 public partial class SchedulePage : ContentPage
 {
     private readonly IBackendService _backendService;
@@ -13,6 +14,7 @@ public partial class SchedulePage : ContentPage
 
     public string Username { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
+    public List<Course>? PreloadedCourses { get; set; }
 
     public ObservableCollection<Course> Courses
     {
@@ -35,7 +37,25 @@ public partial class SchedulePage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        await LoadScheduleAsync();
+        
+        // If we have preloaded courses from login, use them immediately
+        if (PreloadedCourses != null && PreloadedCourses.Any())
+        {
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                _courses.Clear();
+                foreach (var course in PreloadedCourses)
+                {
+                    _courses.Add(course);
+                }
+                UpdateEmptyState();
+            });
+        }
+        else
+        {
+            // Fallback to the old loading method
+            await LoadScheduleAsync();
+        }
     }
 
     private async void OnRefreshClicked(object sender, EventArgs e)

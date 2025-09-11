@@ -60,8 +60,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<!-- Backend files for output -->
+		<Content Include="..\..\Backend\**\*" CopyToOutputDirectory="PreserveNewest" LinkBase="Backend\" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.5" />
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
 	</ItemGroup>
 
 </Project>
