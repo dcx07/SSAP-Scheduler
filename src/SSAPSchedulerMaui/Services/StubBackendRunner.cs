@@ -9,7 +9,7 @@ public class StubBackendRunner : IBackendRunner
         // Simulate some work
         await Task.Delay(1000, cancellationToken);
 
-        // Return stub data for non-Windows platforms
+        // Return stub data for non-Windows platforms with appropriate diagnostics
         var stubCourses = new List<Course>
         {
             new Course
@@ -33,7 +33,16 @@ public class StubBackendRunner : IBackendRunner
         return new BackendRunResult
         {
             Success = true,
-            Courses = stubCourses
+            Courses = stubCourses,
+            // Populate diagnostics for stub implementation
+            BackendDirResolved = Path.Combine(AppContext.BaseDirectory, "Backend"),
+            ConfigWritten = true, // Simulated
+            ExeFound = false, // Not available on non-Windows
+            ProcessStarted = false, // Not available on non-Windows
+            ProcessExited = false, // Not available on non-Windows
+            ExitCode = null, // Not available on non-Windows
+            ScheduleJsonFound = true, // Simulated
+            ScheduleParsed = true // Simulated
         };
     }
 }

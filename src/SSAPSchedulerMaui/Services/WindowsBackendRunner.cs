@@ -10,33 +10,69 @@ public class WindowsBackendRunner : IBackendRunner
 
     public async Task<BackendRunResult> RunBackendAsync(string username, string password, CancellationToken cancellationToken = default)
     {
+        var result = new BackendRunResult();
+        
         try
         {
             // Step 1: Write credentials to config.json
             var backendDir = GetBackendDirectory();
-            await WriteCredentialsAsync(backendDir, username, password);
+            result.BackendDirResolved = backendDir;
+            
+            try
+            {
+                await WriteCredentialsAsync(backendDir, username, password);
+                result.ConfigWritten = true;
+            }
+            catch
+            {
+                result.ConfigWritten = false;
+                throw;
+            }
+
+            // Check if exe exists before attempting to execute
+            var exePath = Path.Combine(backendDir, "main.exe");
+            result.ExeFound = File.Exists(exePath);
 
             // Step 2: Execute main.exe and wait for completion
-            await ExecuteBackendAsync(backendDir, cancellationToken);
+            try
+            {
+                var (exitCode, processStarted, processExited) = await ExecuteBackendAsync(backendDir, cancellationToken);
+                result.ProcessStarted = processStarted;
+                result.ProcessExited = processExited;
+                result.ExitCode = exitCode;
+            }
+            catch
+            {
+                // Process execution failed, but we should still check for diagnostics
+                throw;
+            }
 
             // Step 3: Read and parse schedule_grouped.json
-            var courses = await ReadScheduleAsync(backendDir);
-
-            return new BackendRunResult
+            var schedulePath = Path.Combine(backendDir, "schedule_grouped.json");
+            result.ScheduleJsonFound = File.Exists(schedulePath);
+            
+            try
             {
-                Success = true,
-                Courses = courses
-            };
+                var courses = await ReadScheduleAsync(backendDir);
+                result.ScheduleParsed = true;
+                result.Courses = courses;
+            }
+            catch
+            {
+                result.ScheduleParsed = false;
+                throw;
+            }
+            
+            result.Success = true;
+            return result;
         }
         catch (Exception ex)
         {
             // Redact password from error messages
             var errorMessage = ex.Message.Replace(password, "***");
-            return new BackendRunResult
-            {
-                Success = false,
-                ErrorMessage = errorMessage
-            };
+            result.Success = false;
+            result.ErrorMessage = errorMessage;
+            return result;
         }
     }
 
@@ -74,7 +110,7 @@ public class WindowsBackendRunner : IBackendRunner
         await File.WriteAllTextAsync(configPath, jsonString);
     }
 
-    private async Task ExecuteBackendAsync(string backendDir, CancellationToken cancellationToken)
+    private async Task<(int exitCode, bool processStarted, bool processExited)> ExecuteBackendAsync(string backendDir, CancellationToken cancellationToken)
     {
         var exePath = Path.Combine(backendDir, "main.exe");
         
@@ -95,6 +131,7 @@ public class WindowsBackendRunner : IBackendRunner
 
         using var process = new Process { StartInfo = processInfo };
         process.Start();
+        var processStarted = true;
         
         // Read output streams
         var outputTask = process.StandardOutput.ReadToEndAsync();
@@ -104,9 +141,11 @@ public class WindowsBackendRunner : IBackendRunner
         using var timeoutCts = new CancellationTokenSource(TimeSpan.FromSeconds(TIMEOUT_SECONDS));
         using var combinedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCts.Token);
         
+        bool processExited = false;
         try
         {
             await process.WaitForExitAsync(combinedCts.Token);
+            processExited = true;
         }
         catch (OperationCanceledException)
         {
@@ -125,6 +164,8 @@ public class WindowsBackendRunner : IBackendRunner
         {
             throw new InvalidOperationException($"Backend process failed with exit code {process.ExitCode}: {error}");
         }
+        
+        return (process.ExitCode, processStarted, processExited);
     }
 
     private async Task<List<Course>> ReadScheduleAsync(string backendDir)
