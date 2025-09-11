@@ -1,41 +1,34 @@
-﻿################################################################################
-# 此 .gitignore 文件已由 Microsoft(R) Visual Studio 自动创建。
-################################################################################
+﻿# Visual Studio 相关文件
+.vs/
+**/.vs/
 
-/.vs
-/msedgedriver.zip
-/schedule_grouped.json
+# JSON 文件 (除了配置文件)
 *.json
 !global.json
 !NuGet.config
-/msedgedriver.exe
-/msedgedriver.exe
-/msedgedriver.exe
-/msedgedriver.exe
-/Backend/build
-/Backend/getCK_AUTO.spec
-*.spec
-/UI/Backend/main.exe
-/Backend/dist/getCK_AUTO.exe
-/Backend/dist/main.exe
-/Backend/dist/getCK_AUTO.exe
-/Backend/dist/main.exe
+/schedule_grouped.json
 
-# .NET build artifacts
+# WebDriver 文件
+/msedgedriver.zip
+/msedgedriver.exe
+
+# .NET 构建产物
 **/bin/
 **/obj/
 **/Debug/
 **/Release/
-/Dnet_MAUI/my-maui-app/.vs/my-maui-app/CopilotIndices/17.14.1091.29919
-/Dnet_MAUI/my-maui-app/.vs/my-maui-app/FileContentIndex
-/Dnet_MAUI/my-maui-app/.vs/my-maui-app/v17/.futdcache.v2
-/Dnet_MAUI/my-maui-app/.vs/my-maui-app/v17/.suo
-/Dnet_MAUI/my-maui-app/.vs/my-maui-app/copilot-chat/d089f168/sessions/643bf20b-f1fe-4e2f-95de-6cb8e9a44ced
-/Dnet_MAUI/my-maui-app/.vs/my-maui-app/copilot-chat/d089f168/sessions/c8e82059-58c9-4e19-9d1e-6ecdcccfc7b9
-/Dnet_MAUI/my-maui-app/.vs/my-maui-app/DesignTimeBuild
-/Dnet_MAUI/my-maui-app/my-maui-app.csproj.user
-/SSAP-MAUI/.vs/SSAP-MAUI/CopilotIndices/17.14.1091.29919
-/SSAP-MAUI/.vs/SSAP-MAUI/FileContentIndex
-/SSAP-MAUI/.vs/SSAP-MAUI/copilot-chat/d089f168/sessions
-/SSAP-MAUI/.vs
-/src/SSAPSchedulerMaui/.vs/SSAPSchedulerMaui
+
+# Backend 构建产物
+/Backend/build/
+/Backend/dist/
+Backend/*.exe
+Backend/dist/*.exe
+
+# Python 打包文件
+*.spec
+
+# 项目用户配置文件
+*.csproj.user
+
+# Copilot 缓存文件
+**/copilot-chat/
