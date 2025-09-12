@@ -15,11 +15,13 @@ public class BackendRunResult
     
     // Diagnostics fields for UI binding
     public string BackendDirResolved { get; set; } = string.Empty;
+    public bool ConfigFound { get; set; }
     public bool ConfigWritten { get; set; }
     public bool ExeFound { get; set; }
     public bool ProcessStarted { get; set; }
     public bool ProcessExited { get; set; }
     public int? ExitCode { get; set; }
+    public string StdErrSummary { get; set; } = string.Empty;
     public bool ScheduleJsonFound { get; set; }
     public bool ScheduleParsed { get; set; }
 }

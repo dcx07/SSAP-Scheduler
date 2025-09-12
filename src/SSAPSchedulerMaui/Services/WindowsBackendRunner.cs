@@ -14,53 +14,97 @@ public class WindowsBackendRunner : IBackendRunner
         
         try
         {
-            // Step 1: Write credentials to config.json
+            // Platform guard - only execute on Windows
+            if (!OperatingSystem.IsWindows())
+            {
+                result.ErrorMessage = "Backend execution is only supported on Windows platform";
+                result.Success = false;
+                return result;
+            }
+
+            // Step 1: Resolve and validate backend directory
             var backendDir = GetBackendDirectory();
             result.BackendDirResolved = backendDir;
             
+            if (!Directory.Exists(backendDir))
+            {
+                result.ErrorMessage = $"Backend directory not found: {backendDir}";
+                result.Success = false;
+                return result;
+            }
+
+            // Step 2: Validate main.exe exists
+            var exePath = Path.Combine(backendDir, "main.exe");
+            result.ExeFound = File.Exists(exePath);
+            
+            if (!result.ExeFound)
+            {
+                result.ErrorMessage = $"Backend executable not found: {exePath}";
+                result.Success = false;
+                return result;
+            }
+
+            // Step 3: Write credentials to config.json
+            var configPath = Path.Combine(backendDir, "config.json");
             try
             {
                 await WriteCredentialsAsync(backendDir, username, password);
                 result.ConfigWritten = true;
+                result.ConfigFound = File.Exists(configPath);
             }
-            catch
+            catch (Exception ex)
             {
                 result.ConfigWritten = false;
-                throw;
+                result.ConfigFound = false;
+                result.ErrorMessage = $"Failed to write config.json: {ex.Message}";
+                result.Success = false;
+                return result;
             }
 
-            // Check if exe exists before attempting to execute
-            var exePath = Path.Combine(backendDir, "main.exe");
-            result.ExeFound = File.Exists(exePath);
-
-            // Step 2: Execute main.exe and wait for completion
+            // Step 4: Execute main.exe and wait for completion
+            string stdErr = string.Empty;
             try
             {
-                var (exitCode, processStarted, processExited) = await ExecuteBackendAsync(backendDir, cancellationToken);
+                var (exitCode, processStarted, processExited, capturedStdErr) = await ExecuteBackendAsync(backendDir, cancellationToken);
                 result.ProcessStarted = processStarted;
                 result.ProcessExited = processExited;
                 result.ExitCode = exitCode;
+                stdErr = capturedStdErr;
+                
+                // Provide summary of stderr (first 200 chars to avoid exposing sensitive data)
+                result.StdErrSummary = string.IsNullOrEmpty(stdErr) ? string.Empty : 
+                    stdErr.Length > 200 ? stdErr.Substring(0, 200) + "..." : stdErr;
             }
-            catch
+            catch (Exception ex)
             {
-                // Process execution failed, but we should still check for diagnostics
-                throw;
+                result.ErrorMessage = $"Process execution failed: {ex.Message}";
+                result.Success = false;
+                return result;
             }
 
-            // Step 3: Read and parse schedule_grouped.json
+            // Step 5: Read and parse schedule_grouped.json
             var schedulePath = Path.Combine(backendDir, "schedule_grouped.json");
             result.ScheduleJsonFound = File.Exists(schedulePath);
             
+            if (!result.ScheduleJsonFound)
+            {
+                result.ErrorMessage = $"Schedule file not found after backend execution: {schedulePath}";
+                result.Success = false;
+                return result;
+            }
+
             try
             {
                 var courses = await ReadScheduleAsync(backendDir);
                 result.ScheduleParsed = true;
                 result.Courses = courses;
             }
-            catch
+            catch (Exception ex)
             {
                 result.ScheduleParsed = false;
-                throw;
+                result.ErrorMessage = $"Failed to parse schedule data: {ex.Message}";
+                result.Success = false;
+                return result;
             }
             
             result.Success = true;
@@ -78,13 +122,19 @@ public class WindowsBackendRunner : IBackendRunner
 
     private string GetBackendDirectory()
     {
-        // Use AppContext.BaseDirectory as specified in requirements
+        // Use AppContext.BaseDirectory and Path.Combine as specified in requirements
         var baseDirectory = AppContext.BaseDirectory;
-        var backendDir = Path.Combine(baseDirectory, "Backend");
+        if (string.IsNullOrEmpty(baseDirectory))
+        {
+            throw new InvalidOperationException("Unable to resolve application base directory");
+        }
 
+        var backendDir = Path.Combine(baseDirectory, "Backend");
+        
+        // Validate that backend directory exists
         if (!Directory.Exists(backendDir))
         {
-            Directory.CreateDirectory(backendDir);
+            throw new DirectoryNotFoundException($"Backend directory not found at: {backendDir}");
         }
 
         return backendDir;
@@ -107,22 +157,36 @@ public class WindowsBackendRunner : IBackendRunner
         };
         
         var jsonString = JsonSerializer.Serialize(credentials, jsonOptions);
-        await File.WriteAllTextAsync(configPath, jsonString);
+        await File.WriteAllTextAsync(configPath, jsonString, System.Text.Encoding.UTF8);
+        
+        // Validate that config.json was written successfully
+        if (!File.Exists(configPath))
+        {
+            throw new InvalidOperationException($"Failed to create config.json at: {configPath}");
+        }
     }
 
-    private async Task<(int exitCode, bool processStarted, bool processExited)> ExecuteBackendAsync(string backendDir, CancellationToken cancellationToken)
+    private async Task<(int exitCode, bool processStarted, bool processExited, string stdErr)> ExecuteBackendAsync(string backendDir, CancellationToken cancellationToken)
     {
         var exePath = Path.Combine(backendDir, "main.exe");
         
+        // Validate existence with explicit error message
         if (!File.Exists(exePath))
         {
-            throw new FileNotFoundException("Backend executable (main.exe) not found");
+            throw new FileNotFoundException($"Backend executable not found at: {exePath}");
+        }
+
+        // Validate config.json exists
+        var configPath = Path.Combine(backendDir, "config.json");
+        if (!File.Exists(configPath))
+        {
+            throw new FileNotFoundException($"Configuration file not found at: {configPath}");
         }
 
         var processInfo = new ProcessStartInfo
         {
-            FileName = exePath,
-            WorkingDirectory = backendDir,
+            FileName = exePath, // Fully qualified path
+            WorkingDirectory = backendDir, // Set working directory
             UseShellExecute = false,
             RedirectStandardOutput = true,
             RedirectStandardError = true,
@@ -130,14 +194,19 @@ public class WindowsBackendRunner : IBackendRunner
         };
 
         using var process = new Process { StartInfo = processInfo };
-        process.Start();
+        
+        if (!process.Start())
+        {
+            throw new InvalidOperationException("Failed to start backend process");
+        }
+        
         var processStarted = true;
         
-        // Read output streams
+        // Read output streams asynchronously
         var outputTask = process.StandardOutput.ReadToEndAsync();
         var errorTask = process.StandardError.ReadToEndAsync();
         
-        // Wait for completion with timeout and cancellation
+        // Wait for completion with timeout and cancellation support
         using var timeoutCts = new CancellationTokenSource(TimeSpan.FromSeconds(TIMEOUT_SECONDS));
         using var combinedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCts.Token);
         
@@ -149,7 +218,15 @@ public class WindowsBackendRunner : IBackendRunner
         }
         catch (OperationCanceledException)
         {
-            process.Kill();
+            try
+            {
+                process.Kill();
+            }
+            catch
+            {
+                // Ignore errors when killing process
+            }
+            
             if (timeoutCts.Token.IsCancellationRequested)
             {
                 throw new TimeoutException($"Backend process timed out after {TIMEOUT_SECONDS} seconds");
@@ -157,15 +234,20 @@ public class WindowsBackendRunner : IBackendRunner
             throw;
         }
         
+        // Get output and error streams
         var output = await outputTask;
         var error = await errorTask;
         
+        // Check exit code and provide descriptive error
         if (process.ExitCode != 0)
         {
-            throw new InvalidOperationException($"Backend process failed with exit code {process.ExitCode}: {error}");
+            var errorMsg = string.IsNullOrEmpty(error) ? 
+                $"Process exited with code {process.ExitCode}" : 
+                $"Process failed with exit code {process.ExitCode}: {error}";
+            throw new InvalidOperationException(errorMsg);
         }
         
-        return (process.ExitCode, processStarted, processExited);
+        return (process.ExitCode, processStarted, processExited, error);
     }
 
     private async Task<List<Course>> ReadScheduleAsync(string backendDir)
@@ -174,11 +256,18 @@ public class WindowsBackendRunner : IBackendRunner
         
         if (!File.Exists(schedulePath))
         {
-            throw new FileNotFoundException("Schedule file (schedule_grouped.json) not found after backend execution");
+            throw new FileNotFoundException($"Schedule file not found at: {schedulePath}");
         }
 
-        var jsonContent = await File.ReadAllTextAsync(schedulePath);
-        return ParseTodaysCourses(jsonContent);
+        try
+        {
+            var jsonContent = await File.ReadAllTextAsync(schedulePath, System.Text.Encoding.UTF8);
+            return ParseTodaysCourses(jsonContent);
+        }
+        catch (Exception ex) when (!(ex is FileNotFoundException))
+        {
+            throw new InvalidOperationException($"Failed to read schedule file from {schedulePath}: {ex.Message}", ex);
+        }
     }
 
     private List<Course> ParseTodaysCourses(string jsonContent)

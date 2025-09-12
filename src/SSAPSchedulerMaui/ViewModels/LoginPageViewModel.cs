@@ -26,6 +26,9 @@ public partial class LoginPageViewModel : ObservableObject
     private string backendDirResolved = string.Empty;
 
     [ObservableProperty]
+    private bool configFound = false;
+
+    [ObservableProperty]
     private bool configWritten = false;
 
     [ObservableProperty]
@@ -39,6 +42,9 @@ public partial class LoginPageViewModel : ObservableObject
 
     [ObservableProperty]
     private int? exitCode = null;
+
+    [ObservableProperty]
+    private string stdErrSummary = string.Empty;
 
     [ObservableProperty]
     private bool scheduleJsonFound = false;
@@ -81,11 +87,13 @@ public partial class LoginPageViewModel : ObservableObject
 
             // Update diagnostic properties for UI binding
             BackendDirResolved = result.BackendDirResolved;
+            ConfigFound = result.ConfigFound;
             ConfigWritten = result.ConfigWritten;
             ExeFound = result.ExeFound;
             ProcessStarted = result.ProcessStarted;
             ProcessExited = result.ProcessExited;
             ExitCode = result.ExitCode;
+            StdErrSummary = result.StdErrSummary;
             ScheduleJsonFound = result.ScheduleJsonFound;
             ScheduleParsed = result.ScheduleParsed;
 
