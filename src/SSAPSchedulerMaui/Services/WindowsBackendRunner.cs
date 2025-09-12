@@ -33,8 +33,8 @@ public class WindowsBackendRunner : IBackendRunner
                 return result;
             }
 
-            // Step 2: Validate main.exe exists
-            var exePath = Path.Combine(backendDir, "main.exe");
+            // Step 2: Validate main.exe exists (in dist subdirectory)
+            var exePath = Path.Combine(backendDir, "dist", "main.exe");
             result.ExeFound = File.Exists(exePath);
             
             if (!result.ExeFound)
@@ -168,7 +168,7 @@ public class WindowsBackendRunner : IBackendRunner
 
     private async Task<(int exitCode, bool processStarted, bool processExited, string stdErr)> ExecuteBackendAsync(string backendDir, CancellationToken cancellationToken)
     {
-        var exePath = Path.Combine(backendDir, "main.exe");
+        var exePath = Path.Combine(backendDir, "dist", "main.exe");
         
         // Validate existence with explicit error message
         if (!File.Exists(exePath))
@@ -186,7 +186,7 @@ public class WindowsBackendRunner : IBackendRunner
         var processInfo = new ProcessStartInfo
         {
             FileName = exePath, // Fully qualified path
-            WorkingDirectory = backendDir, // Set working directory
+            WorkingDirectory = backendDir, // Set working directory to Backend (not dist)
             UseShellExecute = false,
             RedirectStandardOutput = true,
             RedirectStandardError = true,
