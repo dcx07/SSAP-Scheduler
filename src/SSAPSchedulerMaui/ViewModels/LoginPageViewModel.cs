@@ -21,6 +21,31 @@ public partial class LoginPageViewModel : ObservableObject
     [ObservableProperty]
     private string statusMessage = string.Empty;
 
+    // Diagnostic properties for UI binding (optional)
+    [ObservableProperty]
+    private string backendDirResolved = string.Empty;
+
+    [ObservableProperty]
+    private bool configWritten = false;
+
+    [ObservableProperty]
+    private bool exeFound = false;
+
+    [ObservableProperty]
+    private bool processStarted = false;
+
+    [ObservableProperty]
+    private bool processExited = false;
+
+    [ObservableProperty]
+    private int? exitCode = null;
+
+    [ObservableProperty]
+    private bool scheduleJsonFound = false;
+
+    [ObservableProperty]
+    private bool scheduleParsed = false;
+
     private CancellationTokenSource? _cancellationTokenSource;
 
     public LoginPageViewModel(IBackendRunner backendRunner)
@@ -53,6 +78,16 @@ public partial class LoginPageViewModel : ObservableObject
             // Execute the 1→2→3 flow: credentials → config.json → main.exe → schedule.json
             StatusMessage = "正在验证凭据...";
             var result = await _backendRunner.RunBackendAsync(Username, Password, _cancellationTokenSource.Token);
+
+            // Update diagnostic properties for UI binding
+            BackendDirResolved = result.BackendDirResolved;
+            ConfigWritten = result.ConfigWritten;
+            ExeFound = result.ExeFound;
+            ProcessStarted = result.ProcessStarted;
+            ProcessExited = result.ProcessExited;
+            ExitCode = result.ExitCode;
+            ScheduleJsonFound = result.ScheduleJsonFound;
+            ScheduleParsed = result.ScheduleParsed;
 
             if (result.Success)
             {

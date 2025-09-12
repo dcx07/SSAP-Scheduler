@@ -12,4 +12,14 @@ public class BackendRunResult
     public bool Success { get; set; }
     public string? ErrorMessage { get; set; }
     public List<Course> Courses { get; set; } = new();
+    
+    // Diagnostics fields for UI binding
+    public string BackendDirResolved { get; set; } = string.Empty;
+    public bool ConfigWritten { get; set; }
+    public bool ExeFound { get; set; }
+    public bool ProcessStarted { get; set; }
+    public bool ProcessExited { get; set; }
+    public int? ExitCode { get; set; }
+    public bool ScheduleJsonFound { get; set; }
+    public bool ScheduleParsed { get; set; }
 }
