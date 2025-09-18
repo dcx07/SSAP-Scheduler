@@ -24,8 +24,11 @@
 Backend/*.exe
 Backend/dist/*.exe
 
-# Python 打包文件
+# Python 相关文件
 *.spec
+**/__pycache__/
+*.pyc
+*.pyo
 
 # 项目用户配置文件
 *.csproj.user
